@@ -1,0 +1,17 @@
+.notif{
+    margin-bottom: 10px;
+    background-color: whitesmoke;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.notif-div{
+    display: flex;
+    justify-content: space-between;
+}
+
+.notif-image{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

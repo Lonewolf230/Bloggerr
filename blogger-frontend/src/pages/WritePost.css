@@ -1,0 +1,21 @@
+.container{
+    padding:50px;
+    padding-top: 20px;
+}
+
+.options{
+    margin: 10px;
+    border: none;
+    border-radius: 5px;
+    padding: 3px 15px;
+    font-weight: 600;
+    padding: 8px;
+    margin: 10px;
+    width: 175px;
+    transition: 0.2s background-color,0.2s color;
+}
+.options:hover{
+    cursor: pointer;
+    background-color: blue;
+    color: white;
+}

@@ -1,0 +1,14 @@
+
+
+.blog-tile{
+
+    transition: 0.3s background-color;
+    border: none;
+    border-radius: 5px;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.blog-tile:hover{
+    background-color: gray;
+}

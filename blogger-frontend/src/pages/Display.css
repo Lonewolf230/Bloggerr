@@ -1,0 +1,76 @@
+.markdown-container{
+    padding: 40px;
+}
+
+.markdown-container table {
+    
+    width: 70%;
+    border-collapse: collapse;
+    background-color: #4d94ff;
+    color: white;
+    margin: auto;
+    border-radius: 10px;
+  }
+  
+  .markdown-container th, .markdown-container td {
+    padding: 0.8rem;
+    border-right: 2px solid;
+    border-bottom: 2px solid ;
+    text-align: left;
+  }
+  
+  .markdown-container th {
+    background-color: darkblue;
+    font-weight: bold;
+  }
+
+  .markdown-container pre {
+    margin: 10px auto;
+    width: 50%;
+    background-color: #1e1e1e;  /* Dark background */
+    color: #ffffff;  /* White text */
+    padding: 12px;
+    border-radius: 8px;
+    overflow-x: auto; /* Enable horizontal scrolling */
+    font-size: 14px;
+}
+
+.markdown-container code {
+    font-family: "Fira Code", monospace; /* Use a coding font */
+}
+
+.markdown-container pre code {
+    display: block;
+    padding: 10px;
+}
+
+.markdown-container .hljs-comment {
+    color: #6a9955; /* Style comments */
+}
+
+  /* Add these styles to your Display.css file */
+
+.media-container {
+  position: relative;
+  min-height: 100px;
+  margin: 1rem 0;
+}
+
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f9f9f9;
+  border-radius: 6px;
+  min-height: 200px;
+  width: 100%;
+}
+
+.center-loader {
+  min-height: 300px;
+}
+
+.blog-image, .blog-video {
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}

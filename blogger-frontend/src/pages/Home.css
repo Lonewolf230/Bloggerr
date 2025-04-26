@@ -1,0 +1,177 @@
+/* 
+#navbar-home{
+    padding:10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.navbar-left{
+    display: flex;
+}
+.navbar-right{
+    padding-top: 12px;
+    display: flex;
+    gap: 20px;
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
+}
+
+.main-posts{
+    display: grid;
+    grid-template-columns: 2.5fr 0.8fr;
+    gap: 20px;
+}
+
+.main-post-scroll{
+    overflow-y: scroll ;
+    height: 80vh;
+    scrollbar-width: none;
+    scrollbar-color: #888 #f1f1f1;
+    box-shadow: 0 4px  rgba(0, 0, 0, 0.1);
+
+}
+
+.main-post-scroll::-webkit-scrollbar {
+    width: 10px; 
+}
+
+.main-post-scroll::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+}
+
+.main-post-scroll::-webkit-scrollbar-thumb {
+    background: #888; 
+    border-radius: 5px; 
+}
+
+.main-post-scroll::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+}
+
+.isActive{
+    text-decoration: underline;
+    color: red;
+    transform: translateY(-5px);
+    transition: transform 0.2s;
+}
+
+.isNotActive{
+    transform: translateY(0);
+    transition: transform 0.2s;
+    color: blue;
+} */
+
+
+
+/* .main-posts > div:first-child {
+    flex: 3;
+    max-height: 80vh; 
+    overflow-y: auto; 
+    padding-right: 10px;
+}
+
+.main-posts > div:last-child {
+    flex: 1;
+    max-height: 80vh;
+    overflow-y: auto;
+} */
+
+/* Modified navbar styles */
+#navbar-home {
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center; /* Add this to vertically center everything */
+  }
+  
+  .navbar-left {
+    display: flex;
+    align-items: center; /* Add this to vertically center the logo and search bar */
+    gap: 10px; /* Add spacing between the logo and search bar */
+  }
+  
+  .navbar-right {
+    display: flex;
+    gap: 20px;
+    align-items: center; /* Add this to vertically center the icons */
+    /* Remove the padding-top that was causing misalignment */
+  }
+  
+  /* You might need to adjust your Searchbar component's container a bit */
+  .search-container {
+    margin: 0; /* Remove any default margins */
+  }
+  
+  /* Rest of your existing styles */
+  .material-symbols-outlined {
+    font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24
+  }
+  
+  .main-posts{
+      display: grid;
+      grid-template-columns: 2.5fr 0.8fr;
+      gap: 20px;
+  }
+  
+  .main-post-scroll{
+      overflow-y: scroll;
+      height: 80vh;
+      scrollbar-width: none;
+      scrollbar-color: #888 #f1f1f1;
+      box-shadow: 0 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .main-post-scroll::-webkit-scrollbar {
+      width: 10px;
+  }
+  
+  .main-post-scroll::-webkit-scrollbar-track {
+      background: #f1f1f1;
+  }
+  
+  .main-post-scroll::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 5px;
+  }
+  
+  .main-post-scroll::-webkit-scrollbar-thumb:hover {
+      background: #555;
+  }
+  
+  .isActive{
+      text-decoration: underline;
+      color: red;
+      transform: translateY(-5px);
+      transition: transform 0.2s;
+  }
+  
+  .isNotActive{
+      transform: translateY(0);
+      transition: transform 0.2s;
+      color: blue;
+  }
+  
+  .main-posts > div:first-child {
+      flex: 3;
+      max-height: 80vh;
+      overflow-y: auto;
+      padding-right: 10px;
+  }
+  
+  .main-posts > div:last-child {
+      flex: 1;
+      max-height: 80vh;
+      overflow-y: auto;
+  }

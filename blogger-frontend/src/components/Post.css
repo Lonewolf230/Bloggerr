@@ -1,0 +1,59 @@
+#post{
+    padding: 15px;
+    border-bottom: 5px;
+    color: black;
+    transition: background-color 0.3s;
+    cursor: pointer;
+}
+
+#post:hover{
+    background-color: grey;
+}
+
+.post-main{
+    display: grid;
+    grid-template-columns: 2fr 1fr ;
+    gap: 20px;
+    
+}
+
+.post-main .post-left p {
+    display: -webkit-box;
+    line-clamp: 4;
+    -webkit-line-clamp: 4; /* Limit to 4 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.5; /* Adjust line height for better readability */
+    max-height: calc(1.5em * 4); /* Adjust max height based on line height and number of lines */
+  }
+  
+
+.post-right{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.post-foot{
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    justify-content: space-between;
+}
+
+.post-foot-left{
+    display: flex;
+    gap: 10px;
+}
+
+.post-foot-right{
+    display: flex;
+    gap: 10px;
+}
+
+hr {
+    border: 1px solid #ddd; /* Light gray line */
+    margin: 10px 0;         /* Spacing above and below */
+    width: 100%;            /* Ensure it spans the container */
+}

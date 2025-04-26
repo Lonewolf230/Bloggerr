@@ -1,0 +1,48 @@
+
+main{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.profile-pic div{
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.stats{
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    grid-template-rows: repeat(2,1fr);
+}
+
+.stat p{
+    line-height: 20%;
+    text-align: center;
+}
+
+section{
+    padding: 15px;
+}
+
+.follow-button{
+    align-self: center;
+    margin: 10px;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 15px;
+    font-weight: 600;
+    margin: 10px;
+    width: 175px;
+    transition: 0.2s background-color,0.2s color;
+}
+.follow-button:hover{
+    background-color: blue;
+    color: white;
+}
+
+.recents p{
+    font-weight: 600;
+}

@@ -1,0 +1,39 @@
+.follow-main{
+    padding: 8px;
+    border-radius: 8px;
+    background-color: whitesmoke;
+    margin: 5px;
+}
+
+.follow-buttons button{
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin: 5px;
+}
+
+.follow-info{
+    display: flex;
+    justify-content: space-between;
+}
+
+.follow-image{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.follow-buttons button:hover{
+    opacity: 0.7;
+}
+
+.accept{
+    background-color: blue;
+    color: white;
+}
+
+.delete{
+    background-color: red;
+    color: white;
+}

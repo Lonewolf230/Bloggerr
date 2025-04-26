@@ -1,0 +1,21 @@
+# Hello and Welcome to Blog Number 1
+
+
+Blah Blah Blah blah blha 
+
+Lorem ipsum odor amet, consectetuer adipiscing elit. Viverra tristique pulvinar magnis inceptos tellus sapien primis aliquam. Inceptos blandit vitae ex, cras sit ante semper efficitur. Velit velit nam primis mauris conubia euismod himenaeos nisl. Est magna orci lorem; amet pharetra habitasse. Potenti condimentum dolor massa posuere tortor tellus tristique. Tristique nunc dignissim sodales ut metus commodo habitant.
+
+
+
+![Uploaded Image](blob:http://localhost:5173/0ea27978-26f4-40ef-9637-b19d248a7372)
+
+<div style="display: flex; justify-content: center;">
+          <video width="500" height="360" controls>
+      <source src="blob:http://localhost:5173/f213e5fd-1f90-49a9-afec-c41acd2a077d" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+    </div>
+
+
+
+<div style="display: flex; justify-content: center;"><iframe width="560" height="315" src="https://www.youtube.com/embed/1SGFzcGDI6E" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>

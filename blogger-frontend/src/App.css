@@ -1,0 +1,21 @@
+/* Scrollbar width */
+::-webkit-scrollbar {
+    width: 3px; /* Adjust between 2px to 5px */
+}
+
+/* Scrollbar track (background) */
+::-webkit-scrollbar-track {
+    background: gray; /* Makes the track blend with the background */
+    border-radius: 10px; /* Rounds the edges */
+}
+
+/* Scrollbar thumb (draggable part) */
+::-webkit-scrollbar-thumb {
+    background: #888; /* Color of the scrollbar */
+    border-radius: 10px; /* Rounded edges */
+}
+
+/* Hover effect */
+::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Darker shade on hover */
+}

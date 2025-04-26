@@ -1,0 +1,27 @@
+
+.notifs-main{
+    padding: 30px;
+}
+
+.notifs-main-div{
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    padding: 20px;
+    gap: 20px;
+}
+
+.notifs{
+    overflow-y: scroll;
+    scrollbar-width: none;
+    height: 70vh;
+    /* box-shadow: ; */
+    box-shadow: 0 4px  rgba(0, 0, 0, 0.1);
+
+}
+
+.follows{
+    overflow-y: scroll;
+    scrollbar-width: none;
+    height: 70vh;
+    box-shadow: 0 4px  rgba(0, 0, 0, 0.1);
+}
