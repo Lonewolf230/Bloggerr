@@ -51,6 +51,11 @@
     resize: none;
 }
 
+#about:focus{
+    border-color: #0077cc;
+    outline:none;
+}
+
 .save-button {
     width: 100%;
     padding: 10px;

@@ -34,7 +34,8 @@ exports.createBlog = async (blogId,username,content,imgIds,vidIds,ytIds) => {
                 comments: 0,
                 imgIds,
                 vidIds,
-                ytIds
+                ytIds,
+                relevantTags:[]
             }
         };
 

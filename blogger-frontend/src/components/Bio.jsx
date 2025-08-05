@@ -4,8 +4,6 @@ export default function Bio({aboutText}){
 
     return(
         <>
-            
-
             <div >
                 <h1 style={{
                     "position":"relative",

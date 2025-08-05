@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
-const PaywallGradientOverlay = ({username}) => {
+const PaywallGradientOverlay = ({ username }) => {
   useEffect(() => {
     // Prevent scrolling when component mounts
     document.body.style.overflow = 'hidden';
-    
+
     return () => {
       document.body.style.overflow = 'auto';
     };
@@ -67,13 +68,15 @@ const PaywallGradientOverlay = ({username}) => {
   return (
     <div style={overlayStyles}>
       <div style={containerStyles}>
-        <h2 style={headingStyles}>Please follow <span style={{color:"blue"}}>{username}</span> to read the blog</h2>
+        <h2 style={headingStyles}>Please follow <span style={{ color: "blue" }}>{username}</span> to read the blog</h2>
         {/* <p style={paragraphStyles}>Get unlimited access to all content for just $5/month</p> */}
-        
-        <button style={buttonStyles}>
-          Follow User
-        </button>
-        
+
+        <Link to={`../../otherProfile/${username}`}>
+          <button style={buttonStyles}>
+            Follow User
+          </button>
+        </Link>
+
       </div>
     </div>
   );

@@ -1,112 +1,267 @@
-*{
+
+
+ /* Enhanced EditProfile.css - Blue & Black Theme */
+
+* {
     scrollbar-width: none;
     -ms-overflow-style: none;
+    box-sizing: border-box;
 }
 
+*::-webkit-scrollbar {
+    display: none;
+}
 
-h1{
+/* Main Layout */
+h1 {
     margin-left: 40px;
+    color: #1a1a1a;
+    font-weight: 700;
 }
-.edit-main{
-    
+
+.edit-main {
     padding: 40px;
     display: grid;
     grid-template-columns: 2.5fr 1.5fr;
-    max-height: calc(100vh-120px);
+    gap: 30px;
+    max-height: calc(100vh - 120px);
     overflow: hidden;
-}
-.edit-stats{
-    display: flex;
-    gap: 20px;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
-.edit-stat{
+/* Profile Section */
+.edit-profile {
+    overflow-y: auto;
+    height: 70vh;
+    padding: 25px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 119, 204, 0.1);
+}
+
+/* Loading Container */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 15px;
+    color: #0077cc;
+    font-weight: 500;
+}
+
+/* User Profile Picture & Data */
+.user-profile-pic-data {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding-bottom: 25px;
+    border-bottom: 2px solid #f1f5f9;
+    margin-bottom: 25px;
+}
+
+.user-profile-pic {
+    width: 80px !important;
+    height: 80px !important;
+    border-radius: 50% !important;
+    border: 3px solid #0077cc;
+    box-shadow: 0 4px 12px rgba(0, 119, 204, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.user-profile-pic:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 119, 204, 0.3);
+}
+
+.username-date {
+    flex: 1;
+}
+
+.username-date strong {
+    font-size: 1.5rem;
+    color: #1a1a1a;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.username-date p {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin: 0;
+    font-weight: 500;
+}
+
+/* Stats Section */
+.edit-stats {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+    justify-content: space-between;
+}
+
+.edit-stat {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    line-height: 0.8;
-    transition: background-color 0.3s;
-    padding: 15px;
-    border-radius: 7px;
+    padding: 10px 10px;
+    border-radius: 12px;
     cursor: pointer;
+    transition: all 0.3s ease;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 2px solid transparent;
+    flex: 1;
+    min-width: 0;
 }
 
-.edit-stat::after{
-    
+.edit-stat:hover {
+    background: linear-gradient(135deg, #0077cc 0%, #005fa3 100%);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 119, 204, 0.3);
+    border-color: #0077cc;
+}
+
+.edit-stat strong:first-child {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: inherit;
+}
+
+.edit-stat strong:last-child {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: inherit;
+}
+
+.auth-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 25px;
+    flex-wrap: wrap;
+}
+
+.auth-button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, #0077cf 0%, #005fb3 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 119, 204, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 160px;
+    justify-content: center;
+}
+
+.auth-button:hover {
+    background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(26, 26, 26, 0.4);
+}
+
+.auth-button:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.auth-button:disabled:hover {
+    background: #94a3b8;
+}
+
+.auth-icon {
+    width: 20px;
+    height: 20px;
+}
+
+
+/* Charts Section */
+.edit-charts {
+    padding: 25px;
+    margin: 0;
+    height: 70vh;
+    overflow-y: auto;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 119, 204, 0.1);
 }
 
 .edit-button{
-    background-color: blue;
-    color: white;
-    border: none;
-    border-radius: 7px;
-    padding: 5px 10px;
-    font-weight: bold;
+    border-radius: 10px;
+    background-color: green;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .edit-main {
+        grid-template-columns: 1fr;
+        padding: 20px;
+        gap: 20px;
+    }
     
+    .edit-stats {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .edit-stat {
+        padding: 15px;
+    }
+    
+    .user-profile-pic-data {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+    
+    .username-date strong {
+        font-size: 1.3rem;
+    }
 }
 
-
-.user-profile-pic-data{
-    display: flex;
-    padding-bottom: 20px;
-    align-items: center;
-    gap: 10px;
+@media (max-width: 480px) {
+    .edit-main {
+        padding: 15px;
+    }
+    
+    .edit-profile,
+    .edit-charts {
+        padding: 15px;
+        height: auto;
+        max-height: 60vh;
+    }
+    
+    .user-profile-pic {
+        width: 60px !important;
+        height: 60px !important;
+    }
+    
+    .edit-stat strong:first-child {
+        font-size: 1.5rem;
+    }
+    
+    .auth-buttons button {
+        padding: 10px 24px;
+        font-size: 0.9rem;
+    }
 }
-
-.user-profile-pic-data button{
-    margin-left: auto;
-    cursor: pointer;
-}
-
-.username-date{
-    line-height: 6px;
-}
-
-.user-data-wrap{
-    display: flex;
-}
-
-.edit-stat:hover{
-    background-color: rgb(0, 0, 0,0.3);
-}
-
-
-.user-info{
-    line-height: 5px;
-}
-.edit-charts{
-    padding-left: 10px;
-    margin-left: 50px;
-    height: 70vh;
-    overflow-y: auto;
-}
-
-.edit-profile{
-    overflow-y: auto;
-    height: 70vh;
-}
-
-.auth-buttons{
-    display: flex;
-    justify-content: space-around;
-
-}
-
-.auth-buttons button{
-    background-color: blue;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-weight: 600;
-    transition: 0.2s background-color;
-    cursor: pointer;
-}
-
-.auth-buttons button:hover{
-    background-color: red;
-}
-
-
-

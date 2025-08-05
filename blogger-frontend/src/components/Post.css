@@ -1,4 +1,4 @@
-#post{
+/* #post{
     padding: 15px;
     border-bottom: 5px;
     color: black;
@@ -20,12 +20,12 @@
 .post-main .post-left p {
     display: -webkit-box;
     line-clamp: 4;
-    -webkit-line-clamp: 4; /* Limit to 4 lines */
+    -webkit-line-clamp: 4; 
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    line-height: 1.5; /* Adjust line height for better readability */
-    max-height: calc(1.5em * 4); /* Adjust max height based on line height and number of lines */
+    line-height: 1.5;
+    max-height: calc(1.5em * 4);
   }
   
 
@@ -53,7 +53,480 @@
 }
 
 hr {
-    border: 1px solid #ddd; /* Light gray line */
-    margin: 10px 0;         /* Spacing above and below */
-    width: 100%;            /* Ensure it spans the container */
+    border: 1px solid #ddd; 
+    margin: 10px 0;         
+    width: 100%;            
+} */
+/* Enhanced Post.css - Blue & Black Theme */
+
+#post {
+    background: white;
+    border-radius: 16px;
+    padding: 25px;
+    margin-bottom: 20px;
+    color: #1a1a1a;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 2px solid rgba(0, 119, 204, 0.08);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+#post::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(135deg, #0077cc 0%, #005fa3 100%);
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+    transform-origin: bottom;
+}
+
+#post:hover {
+    background: linear-gradient(135deg, rgba(0, 119, 204, 0.02) 0%, rgba(248, 250, 252, 0.8) 100%);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 119, 204, 0.15);
+    border-color: rgba(0, 119, 204, 0.2);
+}
+
+#post:hover::before {
+    transform: scaleY(1);
+    transform-origin: top;
+}
+
+/* Author Section */
+.post-author-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.post-author-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 3px solid rgba(0, 119, 204, 0.1);
+    transition: all 0.3s ease;
+    object-fit: cover;
+}
+
+#post:hover .post-author-avatar {
+    border-color: #0077cc;
+    transform: scale(1.05);
+}
+
+.post-author-name {
+    font-weight: 600;
+    color: #334155;
+    font-size: 1rem;
+    margin: 0;
+    transition: color 0.3s ease;
+}
+
+#post:hover .post-author-name {
+    color: #0077cc;
+}
+
+/* Dropdown Styling */
+.author-options-container {
+    position: relative;
+    margin-left: auto;
+}
+
+.dropdown-toggle {
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dropdown-toggle:hover {
+    background: rgba(0, 119, 204, 0.1);
+    color: #0077cc;
+}
+
+.dropdown-menu {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: white;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    border-radius: 12px;
+    padding: 8px 0;
+    min-width: 180px;
+    z-index: 10;
+    border: 1px solid rgba(0, 119, 204, 0.1);
+    animation: dropdownFadeIn 0.2s ease-out;
+}
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dropdown-menu a,
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    text-decoration: none;
+    color: #334155;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.dropdown-menu a:hover,
+.dropdown-item:hover {
+    background: rgba(0, 119, 204, 0.08);
+    color: #0077cc;
+}
+
+.dropdown-item.report {
+    color: #ef4444;
+}
+
+.dropdown-item.report:hover {
+    background: rgba(239, 68, 68, 0.08);
+    color: #ef4444;
+}
+
+/* Post Main Content */
+.post-main {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 25px;
+    align-items: start;
+}
+
+.post-left {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.post-left h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    line-height: 1.3;
+    margin: 0;
+    transition: color 0.3s ease;
+}
+
+#post:hover .post-left h2 {
+    color: #0077cc;
+}
+
+.post-left p {
+    color: #64748b;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: calc(1.6em * 3);
+}
+
+/* Post Footer Left */
+.post-foot-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 8px;
+}
+
+.post-foot-left p {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    margin: 0;
+    font-weight: 500;
+}
+
+/* Post Right Section */
+.post-right {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+}
+
+.post-thumbnail {
+    width: 100%;
+    max-width: 200px;
+    height: 140px;
+    border-radius: 12px;
+    object-fit: cover;
+    border: 2px solid rgba(0, 119, 204, 0.1);
+    transition: all 0.3s ease;
+}
+
+#post:hover .post-thumbnail {
+    border-color: #0077cc;
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(0, 119, 204, 0.2);
+}
+
+/* Post Footer Right */
+.post-foot-right {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.post-action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: rgba(248, 250, 252, 0.8);
+    color: #64748b;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 1px solid rgba(0, 119, 204, 0.1);
+}
+
+.post-action-btn:hover {
+    background: rgba(0, 119, 204, 0.1);
+    color: #0077cc;
+    transform: scale(1.1);
+}
+
+.post-action-btn.active {
+    background: #0077cc;
+    color: white;
+}
+
+/* Horizontal Rule */
+.post-divider {
+    border: none;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, rgba(0, 119, 204, 0.2) 50%, transparent 100%);
+    margin: 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+#post:hover .post-divider {
+    opacity: 1;
+}
+
+/* Tags Section (if needed) */
+.post-tags {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
+
+.post-tag {
+    background: rgba(0, 119, 204, 0.1);
+    color: #0077cc;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    border: 1px solid rgba(0, 119, 204, 0.2);
+}
+
+/* Reading Time Indicator */
+.reading-time {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    #post {
+        padding: 20px 18px;
+        margin-bottom: 16px;
+        border-radius: 12px;
+    }
+    
+    .post-author-section {
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+    
+    .post-author-avatar {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .post-author-name {
+        font-size: 0.9rem;
+    }
+    
+    .post-main {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .post-left h2 {
+        font-size: 1.2rem;
+    }
+    
+    .post-left p {
+        font-size: 0.9rem;
+        -webkit-line-clamp: 2;
+        max-height: calc(1.6em * 2);
+    }
+    
+    .post-thumbnail {
+        max-width: 100%;
+        height: 120px;
+    }
+    
+    .post-right {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .post-foot-right {
+        margin: 0;
+    }
+    
+    .dropdown-menu {
+        min-width: 160px;
+    }
+}
+
+@media (max-width: 480px) {
+    #post {
+        padding: 16px 14px;
+        border-radius: 10px;
+    }
+    
+    .post-author-section {
+        gap: 10px;
+        margin-bottom: 14px;
+    }
+    
+    .post-author-avatar {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .post-author-name {
+        font-size: 0.85rem;
+    }
+    
+    .post-left h2 {
+        font-size: 1.1rem;
+        line-height: 1.2;
+    }
+    
+    .post-left p {
+        font-size: 0.85rem;
+    }
+    
+    .post-foot-left p {
+        font-size: 0.8rem;
+    }
+    
+    .post-thumbnail {
+        height: 100px;
+        border-radius: 8px;
+    }
+    
+    .post-action-btn {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .dropdown-menu {
+        min-width: 140px;
+        padding: 6px 0;
+    }
+    
+    .dropdown-menu a,
+    .dropdown-item {
+        padding: 10px 12px;
+        font-size: 0.85rem;
+    }
+}
+
+/* Animation for post loading */
+@keyframes postFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#post {
+    animation: postFadeIn 0.4s ease-out;
+}
+
+/* Skeleton loading animation */
+.post-skeleton {
+    background: white;
+    border-radius: 16px;
+    padding: 25px;
+    margin-bottom: 20px;
+    border: 2px solid rgba(0, 119, 204, 0.08);
+}
+
+.skeleton-line {
+    height: 20px;
+    background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+.skeleton-circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+}
+
+.skeleton-image {
+    width: 100%;
+    height: 140px;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
 }

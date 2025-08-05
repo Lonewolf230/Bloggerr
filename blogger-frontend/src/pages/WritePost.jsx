@@ -89,7 +89,6 @@ export default function WritePost() {
                     Key: key,
                     Body: file,
                     ContentType: file.type
-                    // Removed ACL parameter
                 }
             });
 
@@ -106,7 +105,6 @@ export default function WritePost() {
         let updatedContent = value;
 
         try {
-            // Create arrays to store uploads by type
             let imageUploads = [];
             let videoUploads = [];
             
@@ -115,7 +113,6 @@ export default function WritePost() {
             for (const [uploadId, upload] of mediaUploads.entries()) {
                 if (!upload.uploaded) {
                     const s3Url = await uploadToS3(upload.file, upload.type, index++);
-                    // Replace the preview URL with the S3 URL in the content
                     updatedContent = updatedContent.replace(upload.previewUrl, s3Url);
                     
                     // Store the URL in the appropriate array
@@ -177,7 +174,7 @@ export default function WritePost() {
         <div className="container">
             {isUploading && <GenLoader text='Uploading blog...' />}
 
-            <h1>Start writing your blog</h1>
+            <h1 className="header">Start writing your blog</h1>
 
             <div style={{ marginBottom: "10px" }}>
                 <button className="options" style={{ marginRight: "10px" }}>

@@ -12,7 +12,9 @@ exports.createUser=async (email,about='',profilePic='')=>{
             following:[],
             blogIds:[],
             profilePic,
-            about
+            about,
+            verified:false,
+            interests:[]
         }
     }
 
@@ -78,6 +80,7 @@ exports.editUser = async (currentUsername, profilePic, about) => {
 };
 
 
+
 exports.followUser = async (currentUsername, targetUsername) => {
     if (currentUsername === targetUsername) {
         return {
@@ -92,7 +95,6 @@ exports.followUser = async (currentUsername, targetUsername) => {
     }
 
     try {
-        // Check if target user exists
         const getUserCommand = new GetCommand(params)
         const userResult = await dynamoDB.send(getUserCommand)
 
@@ -103,7 +105,6 @@ exports.followUser = async (currentUsername, targetUsername) => {
             }
         }
 
-        // Check if already following
         const getCurrentUserCommand = new GetCommand({
             TableName: "users",
             Key: { username: currentUsername }
@@ -118,7 +119,6 @@ exports.followUser = async (currentUsername, targetUsername) => {
             }
         }
 
-        // Update target user's followers list
         const updateTargetParams = {
             TableName: "users",
             Key: { username: targetUsername },
@@ -130,7 +130,6 @@ exports.followUser = async (currentUsername, targetUsername) => {
             ReturnValues: "UPDATED_NEW"
         }
 
-        // Update current user's following list
         const updateCurrentParams = {
             TableName: "users",
             Key: { username: currentUsername },

@@ -1,4 +1,4 @@
-
+/* 
 
 .blog-tile{
 
@@ -11,4 +11,345 @@
 
 .blog-tile:hover{
     background-color: gray;
+} */
+
+/* Enhanced BlogView.css - Blue & Black Theme */
+
+/* Blog List Container */
+.blog-list-container {
+    padding: 25px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 119, 204, 0.1);
+    height: 70vh;
+    overflow: hidden;
+}
+
+.blog-list-scroll {
+    overflow-y: auto;
+    scrollbar-width: none;
+    height: calc(100% - 80px);
+    padding-right: 10px;
+}
+
+.blog-list-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+/* Blog List Title */
+.blog-list-title {
+    color: #1a1a1a;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 25px;
+    text-align: center;
+    background: linear-gradient(135deg, #0077cc 0%, #005fa3 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f1f5f9;
+}
+
+/* Loading State */
+.blog-loading-state {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+}
+
+/* Empty State */
+.blog-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 50vh;
+    color: #64748b;
+    font-size: 1.2rem;
+    font-weight: 500;
+    text-align: center;
+}
+
+.blog-empty-state::before {
+    content: "📝";
+    font-size: 3rem;
+    margin-bottom: 15px;
+    opacity: 0.5;
+}
+
+/* Blog Tile */
+.blog-tile {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 2px solid transparent;
+    border-radius: 16px;
+    padding: 20px 25px;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.blog-tile::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(135deg, #0077cc 0%, #005fa3 100%);
+    transition: width 0.3s ease;
+}
+
+.blog-tile:hover {
+    background: linear-gradient(135deg, #0077cc 0%, #005fa3 100%);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 119, 204, 0.3);
+    border-color: #0077cc;
+}
+
+.blog-tile:hover::before {
+    width: 100%;
+    z-index: -1;
+}
+
+.blog-tile:active {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(0, 119, 204, 0.4);
+}
+
+/* Blog Tile Content */
+.blog-tile-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+    z-index: 2;
+}
+
+.blog-tile-main {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+}
+
+.blog-tile-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0 0 8px 0;
+    transition: color 0.3s ease;
+    word-break: break-word;
+    line-height: 1.4;
+}
+
+.blog-tile:hover .blog-tile-title {
+    color: white;
+}
+
+.blog-tile-date {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: #64748b;
+    margin: 0;
+    transition: color 0.3s ease;
+}
+
+.blog-tile:hover .blog-tile-date {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Blog Tile Actions */
+.blog-tile-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.blog-delete-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.blog-delete-btn:hover {
+    background: #ef4444;
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.blog-tile:hover .blog-delete-btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.blog-tile:hover .blog-delete-btn:hover {
+    background: #ef4444;
+    color: white;
+}
+
+.blog-delete-icon {
+    font-size: 1.2rem;
+}
+
+/* Blog Link Wrapper */
+.blog-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+/* Animation for blog tiles */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.blog-tile {
+    animation: fadeInUp 0.3s ease-out;
+}
+
+.blog-tile:nth-child(even) {
+    animation-delay: 0.1s;
+}
+
+.blog-tile:nth-child(odd) {
+    animation-delay: 0.05s;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .blog-list-container {
+        padding: 20px;
+        border-radius: 12px;
+    }
+    
+    .blog-list-title {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+    }
+    
+    .blog-tile {
+        padding: 15px 20px;
+        margin-bottom: 12px;
+        border-radius: 12px;
+    }
+    
+    .blog-tile-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .blog-tile-actions {
+        align-self: flex-end;
+    }
+    
+    .blog-tile-title {
+        font-size: 1.1rem;
+    }
+    
+    .blog-tile-date {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .blog-list-container {
+        padding: 15px;
+        height: auto;
+        max-height: 70vh;
+    }
+    
+    .blog-list-title {
+        font-size: 1.3rem;
+        margin-bottom: 15px;
+    }
+    
+    .blog-tile {
+        padding: 12px 15px;
+        margin-bottom: 10px;
+    }
+    
+    .blog-tile-content {
+        gap: 12px;
+    }
+    
+    .blog-tile-title {
+        font-size: 1rem;
+        line-height: 1.3;
+    }
+    
+    .blog-tile-date {
+        font-size: 0.8rem;
+    }
+    
+    .blog-delete-btn {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .blog-delete-icon {
+        font-size: 1rem;
+    }
+    
+    .blog-empty-state {
+        font-size: 1rem;
+        height: 40vh;
+    }
+    
+    .blog-empty-state::before {
+        font-size: 2.5rem;
+        margin-bottom: 12px;
+    }
+}
+
+/* Custom scrollbar for webkit browsers */
+@media (min-width: 769px) {
+    .blog-list-scroll {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(0, 119, 204, 0.3) transparent;
+    }
+    
+    .blog-list-scroll::-webkit-scrollbar {
+        display: block;
+        width: 6px;
+    }
+    
+    .blog-list-scroll::-webkit-scrollbar-track {
+        background: transparent;
+        border-radius: 3px;
+    }
+    
+    .blog-list-scroll::-webkit-scrollbar-thumb {
+        background: rgba(0, 119, 204, 0.3);
+        border-radius: 3px;
+        transition: background 0.3s ease;
+    }
+    
+    .blog-list-scroll::-webkit-scrollbar-thumb:hover {
+        background: rgba(0, 119, 204, 0.5);
+    }
 }

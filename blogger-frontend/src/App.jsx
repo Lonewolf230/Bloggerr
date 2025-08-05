@@ -5,8 +5,6 @@ import WritePost from './pages/WritePost';
 import MainLayout from './pages/MainLayout';
 import Error from './components/Error.jsx'
 import EditProfile from './pages/EditProfile.jsx';
-import Notifications from './pages/Notifications.jsx';
-import Stats from './components/Stats.jsx';
 import FollowersList from './components/FollowersList.jsx';
 import FollowingList from './components/FollowingList.jsx';
 import {BlogList} from './components/BlogView.jsx';
@@ -17,6 +15,7 @@ import ProtectedRoute from './components/ProtectedRoute.jsx';
 import VerifyAccountPage from './pages/VerifyAccountPage.jsx';
 import { useAuth } from './misc/AuthContext.jsx';
 import ViewProfile from './pages/ViewProfile.jsx';
+import TagSelectionScreen from './pages/Tags.jsx';
 
 function App() {
 
@@ -42,18 +41,20 @@ function App() {
                     </ProtectedRoute>
                   } 
                 />
+                <Route element={<TagSelectionScreen/>} path='/tags'/>
                 <Route element={<ProtectedRoute><WritePost/></ProtectedRoute>} path='/writepost'/>
                 <Route element={<ProtectedRoute><EditProfile/></ProtectedRoute>} path='/profile'>
-                  <Route index element={<Stats/>} />
+                  <Route index element={<BlogList/>} />
                   <Route element={<FollowersList/>} path='followers'/>
                   <Route element={<FollowingList/>} path='following'/>
                   <Route element={<BlogList/>} path='posts'/>
+
                 </Route>
-                <Route element={<ProtectedRoute><ViewProfile/></ProtectedRoute>} path='/otherProfile/:username'>
-                  <Route index element={<Stats/>} />
-                  <Route element={<FollowersList/>} path='followers/:username'/>
-                  <Route element={<FollowingList/>} path='following/:username'/>
-                  <Route element={<BlogList/>} path='posts/:username'/>
+                <Route element={<ProtectedRoute><ViewProfile  /></ProtectedRoute>} path='/otherProfile/:username'>
+                  <Route index element={<BlogList other={true}/>} />
+                  <Route element={<FollowersList other={true}/>} path='followers/:username'/>
+                  <Route element={<FollowingList other={true}/>} path='following/:username'/>
+                  <Route element={<BlogList other={true}/>} path='posts/:username'/>
                 </Route>
                 <Route element={<DisplayBlog/>} path='/blog/:blogId' />
                 {/* <Route element={<Notifications/>} path='/notifications'/> */}

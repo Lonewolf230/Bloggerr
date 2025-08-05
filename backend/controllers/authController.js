@@ -2,7 +2,9 @@ const {SignUpCommand,InitiateAuthCommand,
         ConfirmSignUpCommand,GlobalSignOutCommand,
         DeleteUserCommand
 }=require("@aws-sdk/client-cognito-identity-provider")
+const { UpdateCommand } = require("@aws-sdk/lib-dynamodb");
 
+const dynamoDB=require('../config/dynamoDBconfig')
 const cognito=require('../config/awsConfig')
 const userModel=require('../models/userModel')
 require('dotenv').config()
@@ -67,9 +69,22 @@ exports.verifyUser=async (req,res)=>{
         Username:email.split('@')[0],
         ConfirmationCode:code
     }
+
     try{
+        const username=email.split('@')[0]
         const command=new ConfirmSignUpCommand(params)
+        const updateCommand=new UpdateCommand({
+            TableName:"users",
+            Key:{
+                username
+            },
+            UpdateExpression:"set verified = :verifyStatus",
+            ExpressionAttributeValues:{
+                ":verifyStatus":true
+            }
+        })
         await cognito.send(command)
+        await dynamoDB.send(updateCommand)
         res.status(200).json({message:"User verified Successfully"})
     }
     catch(err){

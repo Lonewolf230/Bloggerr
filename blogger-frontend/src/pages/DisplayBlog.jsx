@@ -1,5 +1,3 @@
-
-
 import { useParams } from "react-router-dom";
 import Markdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
@@ -90,42 +88,61 @@ export default function DisplayBlog() {
         }
     }, [blogId, currentUser.username]);
 
-
-        // Handle different states
-        if (loading) return (
-            <div style={{
-                display: "flex", 
-                justifyContent: "center", 
-                alignItems: "center", 
-                height: "100vh"
-            }}>
-                <InfinitySpin color="blue"/>
+    // Handle different states
+    if (loading) {
+        return (
+            <div className="blog-loading-state">
+                <InfinitySpin 
+                    width="200"
+                    color="#0077cc"
+                />
             </div>
         );
-    
-        if (error) return <div className="error">{error}</div>;
-        if (!blogData || !blogData.content) return <div className="error">Blog not found</div>;
-    
-        // Paywall check
-        if (currentUser.username !== blogData.author && !userData.includes(blogData.author)) {
-            return <PaywallGradientOverlay username={blogData.author}/>;
-        }
-    
-        // For DynamoDB format support
-        const content = blogData.content?.S || blogData.content;
-    
+    }
+
+    if (error) {
+        return (
+            <div className="display-blog-container">
+                <div className="error">
+                    {error}
+                </div>
+            </div>
+        );
+    }
+
+    if (!blogData || !blogData.content) {
+        return (
+            <div className="display-blog-container">
+                <div className="error">
+                    Blog not found
+                </div>
+            </div>
+        );
+    }
+
+    // Paywall check
+    if (currentUser.username !== blogData.author && !userData.includes(blogData.author)) {
+        return (
+            <div className="display-blog-container">
+                <PaywallGradientOverlay username={blogData.author}/>
+            </div>
+        );
+    }
+
+    // For DynamoDB format support
+    const content = blogData.content?.S || blogData.content;
 
     return (
-        <>
-            <div>
-                <div className="markdown-container">
-                    <Markdown 
-                        children={content}
-                        remarkPlugins={[remarkGfm, remarkBreaks]} 
-                        rehypePlugins={[rehypeRaw, rehypeHighlight]}
-                    />
-                </div>
+        <div className="display-blog-container">
+            <div className="markdown-container">
+                <Markdown 
+                    children={content}
+                    remarkPlugins={[remarkGfm, remarkBreaks]} 
+                    rehypePlugins={[rehypeRaw, rehypeHighlight]}
+                />
+            </div>
 
+            <div style={{ maxWidth: '900px', margin: '0 auto' }}>
                 <CommentThread 
                     blogId={blogId} 
                     blogStats={blogStats} 
@@ -133,6 +150,6 @@ export default function DisplayBlog() {
                     updateBlogStats={updateBlogStats}
                 />
             </div>
-        </>
+        </div>
     );
 }

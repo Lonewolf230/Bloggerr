@@ -1,15 +1,16 @@
-
-
-export default function Follower({username}){
-
-    return(
+export default function Follower({ username }) {
+    return (
         <>
-            <div style={{"display":"flex",
-                        "justifyContent":"space-evenly",}}>
-                <img src={`https://bloggers3bucket.s3.ap-south-1.amazonaws.com/profilePics/${username}.jpg`} alt="" style={{ width: 50, height: 50, borderRadius: '50%' }} />
-                <p>{username}</p>
-            </div>
-            <hr />
+            <img 
+                src={`https://bloggers3bucket.s3.ap-south-1.amazonaws.com/profilePics/${username}.jpg`} 
+                alt={`${username}'s profile`}
+                className="follower-avatar"
+                onError={(e) => {
+                    // Fallback to a default avatar if image fails to load
+                    e.target.src = `https://ui-avatars.com/api/?name=${username}&background=0077cc&color=fff&size=60&bold=true`;
+                }}
+            />
+            <p className="follower-username">{username}</p>
         </>
-    )
+    );
 }

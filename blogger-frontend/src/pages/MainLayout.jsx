@@ -18,7 +18,7 @@ export default function MainLayout() {
             <nav id="navbar-home">
                 <div className="navbar-left">
                     <NavLink to="/home" className='isNotActive' style={{ "textDecoration": "none", "paddingRight": "10px" }}>
-                       <strong><p>Blogger</p></strong> 
+                       <h1 style={{'color':'#0077cc'}}><strong><p>Blogger</p></strong></h1>
                     </NavLink>
                     <Searchbar />
                 </div>

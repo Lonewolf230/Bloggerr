@@ -1,177 +1,3 @@
-// import { Outlet, NavLink, useNavigate } from 'react-router-dom'
-// import { authAPI } from '../api/axios.js'
-// import './EditProfile.css'
-// import { RiAccountCircleFill } from 'react-icons/ri'
-// import { CiEdit } from "react-icons/ci";
-// import Bio from '../components/Bio.jsx'
-// import { useEffect, useState } from 'react'
-// import { Bars } from 'react-loader-spinner'
-// import ConfirmBox from '../components/ConfirmBox.jsx'
-// import { useAuth } from '../misc/AuthContext.jsx'
-// import { blogAPI } from '../api/blogAPI.js'
-// import EditProfileForm from './EditProfileForm.jsx';
-
-// export default function EditProfile(){
-//     const navigate = useNavigate()
-//     const [confirm,setConfirm]=useState(false)
-//     const [loading, setLoading] = useState({
-//         logout: false,
-//         delete: false
-//     })
-//     const [showForm,setShowForm]=useState(false)
-//     const {currentUser}=useAuth()
-
-//     useEffect(()=>{
-//         const fetchData=async()=>{
-//             try{
-//                 const response=await blogAPI.getBlogs(currentUser.username)
-//                 console.log(response)
-//                 console.log(response.result.blogs)
-//             }
-//             catch(err){
-
-//             }
-//         }
-//         fetchData()
-//     },[currentUser])
-
-//     const handleLogout = async () => {
-//         try {
-//             setLoading({...loading, logout: true})
-//             await authAPI.logout()
-//             // Navigate after successful logout
-//             navigate('/')
-//         } catch (error) {
-//             console.error("Logout failed:", error)
-//             alert("Logout failed. Please try again.")
-//         } finally {
-//             setLoading({...loading, logout: false})
-//         }
-//     }
-
-//     const handleDeleteAccount=()=>{
-//         setConfirm(true)
-//     }
-    
-//     const confirmDeleteAccount = async () => {
-//         // Add confirmation dialog
-             
-//             try {
-//                 setLoading({...loading, delete: true})
-//                 await authAPI.deleteAccount()
-//                 navigate('/')
-//             } catch (error) {
-//                 console.error("Account deletion failed:", error)
-//                 alert("Account deletion failed. Please try again.")
-//             } finally {
-//                 setLoading({...loading, delete: false})
-//                 setConfirm(false)
-//             }
-        
-//     }
-
-//     return(
-//         <>
-//             {showForm && <EditProfileForm showForm={showForm} 
-//                         setShowForm={setShowForm} 
-//                         username={currentUser.username}
-//                         onUpdateSuccess={handleProfileUpdateSuccess}/>}
-//             <main>
-//                 <div className='edit-main'>
-//                     <div className='edit-profile'>
-//                         <div className='user-profile-pic-data'>
-//                             <RiAccountCircleFill size={50}/>
-//                             <div className='username-date'>
-//                                 <strong>{currentUser.username}</strong>
-//                                 <br />
-//                                 <p>from April 2024</p>
-//                             </div>
-//                             <button className='edit-button' onClick={()=>setShowForm(true)}>
-//                                 <span>
-//                                     <CiEdit color='white' size={30} />
-//                                 </span>
-//                             </button>
-//                         </div>
-                        
-//                         <div className='edit-stats'>
-//                             <NavLink style={{"textDecoration":"none",'color':"black"}} to={'followers'}>
-//                                 <div className='edit-stat'>
-//                                     <strong>50</strong>
-//                                     <br />
-//                                     <strong>Following</strong>
-//                                 </div>
-//                             </NavLink>
-                            
-//                             <NavLink style={{"textDecoration":"none",'color':"black"}} to={'following'}>
-//                                 <div className='edit-stat'>
-//                                     <strong>29</strong>
-//                                     <br />
-//                                     <strong>Following</strong>
-//                                 </div>   
-//                             </NavLink>
-
-//                             <NavLink style={{"textDecoration":"none",'color':"black"}} to={'posts'}>
-//                                 <div className='edit-stat'>
-//                                     <strong>100</strong>
-//                                     <br />
-//                                     <strong>Blog Posts</strong>
-//                                 </div>   
-//                             </NavLink>
-
-//                             <NavLink style={{"textDecoration":"none",'color':"black"}} to={''}>
-//                                 <div className='edit-stat'>
-//                                     <strong>29</strong>
-//                                     <br />
-//                                     <strong>Most Likes</strong>
-//                                 </div>   
-//                             </NavLink>
-                                                                         
-//                         </div>
-//                         <Bio/>
-
-//                         <div className='auth-buttons'>
-//                             <button 
-//                                 onClick={handleLogout} 
-//                                 disabled={loading.logout}
-//                             >
-//                                 {loading.logout ? 
-//                                         <Bars
-//                                         height="20"
-//                                         width="20"
-//                                         color="white"
-//                                         ariaLabel="bars-loading"
-//                                         wrapperStyle={{}}
-//                                         wrapperClass=""
-//                                         visible={true}
-//                                         />                                              
-//                                 :<p>Log Out</p>}
-//                             </button>
-//                             <button 
-//                                 onClick={handleDeleteAccount}
-//                                 disabled={loading.delete}
-//                             >
-//                                 {loading.delete ? 'Deleting...' : 'Delete Account'}
-//                             </button>
-//                         </div>
-//                     </div>
-
-//                     <div className='edit-charts'>
-//                         <Outlet/>
-//                     </div>
-//                 </div>
-//             </main>
-
-//             {confirm && (
-//                 <ConfirmBox 
-//                     text="delete your account?"
-//                     confirmFunction={confirmDeleteAccount} 
-//                     cancelFunction={()=>setConfirm(false)} 
-//                 />
-//             )}
-//         </> 
-//     )
-// }
-
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { authAPI } from '../api/axios.js';
 import './EditProfile.css';
@@ -185,6 +11,7 @@ import { useAuth } from '../misc/AuthContext.jsx';
 import { blogAPI } from '../api/blogAPI.js';
 import EditProfileForm from './EditProfileForm.jsx';
 import { userAPI } from '../api/userAPI.js';
+import { Delete, LogOut, PencilLine, Star, Trash, Trash2Icon } from 'lucide-react';
 
 export default function EditProfile() {
     const navigate = useNavigate();
@@ -203,11 +30,11 @@ export default function EditProfile() {
         blogPosts: 0,
         mostLikes: 0
     });
-    const {logout,currentUser,refreshUserData}=useAuth()
+    const { logout, currentUser, refreshUserData } = useAuth()
     // Function to fetch user data and blogs
     const fetchUserData = async () => {
         if (!currentUser || !currentUser.username) return;
-        
+
         setLoading(prev => ({ ...prev, data: true }));
         try {
             // Fetch blogs
@@ -215,14 +42,14 @@ export default function EditProfile() {
             console.log("Fetched blogs:", blogResponse);
             if (blogResponse && blogResponse.result && blogResponse.result.blogs) {
                 setUserBlogs(blogResponse.result.blogs);
-                
+
                 // Update the number of blogs in stats
                 setUserStats(prev => ({
                     ...prev,
                     blogPosts: blogResponse.result.blogs.length || 0
                 }));
             }
-            
+
             // Fetch user profile data if you have such an API
             try {
                 const userResponse = await userAPI.getProfile();
@@ -256,32 +83,15 @@ export default function EditProfile() {
         }
     }, []);
 
-    // Handler for when profile is updated successfully
     const handleProfileUpdateSuccess = () => {
-        // Refresh user data in auth context
         refreshUserData();
-        // Re-fetch blogs and other user data
         fetchUserData();
     };
 
-    // const handleLogout = async () => {
-    //     try {
-    //         setLoading({ ...loading, logout: true });
-    //         await authAPI.logout();
-    //         // Navigate after successful logout
-    //         navigate('/');
-    //     } catch (error) {
-    //         console.error("Logout failed:", error);
-    //         alert("Logout failed. Please try again.");
-    //     } finally {
-    //         setLoading({ ...loading, logout: false });
-    //     }
-    // };
     const handleLogout = async () => {
         try {
             setLoading({ ...loading, logout: true });
             await logout();
-            // The navigate should take effect now without infinite loops
             navigate('/');
         } catch (error) {
             console.error("Logout failed:", error);
@@ -294,7 +104,7 @@ export default function EditProfile() {
     const handleDeleteAccount = () => {
         setConfirm(true);
     };
-    
+
     const confirmDeleteAccount = async () => {
         try {
             setLoading({ ...loading, delete: true });
@@ -312,9 +122,9 @@ export default function EditProfile() {
     return (
         <>
             {showForm && (
-                <EditProfileForm 
-                    showForm={showForm} 
-                    setShowForm={setShowForm} 
+                <EditProfileForm
+                    showForm={showForm}
+                    setShowForm={setShowForm}
                     username={currentUser.username}
                     onUpdateSuccess={handleProfileUpdateSuccess}
                 />
@@ -339,10 +149,10 @@ export default function EditProfile() {
                             <>
                                 <div className='user-profile-pic-data'>
                                     {userData?.user ? (
-                                        <img 
-                                            src={userData.user.profilePic} 
-                                            alt="Profile" 
-                                            className="user-profile-pic" 
+                                        <img
+                                            src={userData.user.profilePic}
+                                            alt="Profile"
+                                            className="user-profile-pic"
                                             style={{ width: 50, height: 50, borderRadius: '50%' }}
                                         />
                                     ) : (
@@ -353,13 +163,19 @@ export default function EditProfile() {
                                         <br />
                                         <p>from {userData?.user.createdAt ? new Date(userData.user.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'April 2024'}</p>
                                     </div>
+                                    <button className='edit-button' >
+                                        <span>
+                                            <Star color='white' size={30}/>
+                                        </span>
+                                    </button>
                                     <button className='edit-button' onClick={() => setShowForm(true)}>
                                         <span>
-                                            <CiEdit color='white' size={30} />
+                                            {/* <CiEdit color='white' size={30} /> */}
+                                            <PencilLine color='white' size={30}/>
                                         </span>
                                     </button>
                                 </div>
-                                
+
                                 <div className='edit-stats'>
                                     <NavLink style={{ "textDecoration": "none", 'color': "black" }} to={'followers'}>
                                         <div className='edit-stat'>
@@ -368,13 +184,13 @@ export default function EditProfile() {
                                             <strong>Followers</strong>
                                         </div>
                                     </NavLink>
-                                    
+
                                     <NavLink style={{ "textDecoration": "none", 'color': "black" }} to={'following'}>
                                         <div className='edit-stat'>
                                             <strong>{userStats.following}</strong>
                                             <br />
                                             <strong>Following</strong>
-                                        </div>   
+                                        </div>
                                     </NavLink>
 
                                     <NavLink style={{ "textDecoration": "none", 'color': "black" }} to={'posts'}>
@@ -382,49 +198,59 @@ export default function EditProfile() {
                                             <strong>{userStats.blogPosts}</strong>
                                             <br />
                                             <strong>Blog Posts</strong>
-                                        </div>   
+                                        </div>
                                     </NavLink>
 
 
                                 </div>
-                                
-                                <Bio 
-                                    aboutText={userData?.user?.about || "No bio available yet. Click edit to add information about yourself."} 
+
+                                <Bio
+                                    aboutText={userData?.user?.about || "No bio available yet. Click edit to add information about yourself."}
                                 />
 
+
                                 <div className='auth-buttons'>
-                                    <button 
-                                        onClick={handleLogout} 
+                                    <button
+                                        onClick={handleLogout}
                                         disabled={loading.logout}
+                                        className='auth-button'
                                     >
-                                        {loading.logout ? 
+                                        {loading.logout ? (
                                             <Bars
                                                 height="20"
                                                 width="20"
                                                 color="white"
                                                 ariaLabel="bars-loading"
-                                                wrapperStyle={{}}
-                                                wrapperClass=""
+                                                wrapperStyle={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                                                 visible={true}
-                                            />                                              
-                                        : <p>Log Out</p>}
+                                            />
+                                        ) : (
+                                            <>
+                                                <LogOut className="auth-icon" />
+                                                <span>Log Out</span>
+                                            </>
+                                        )}
                                     </button>
-                                    <button 
+
+                                    <button
                                         onClick={handleDeleteAccount}
                                         disabled={loading.delete}
+                                        className='auth-button'
                                     >
-                                        {loading.delete ? 'Deleting...' : 'Delete Account'}
+                                        <Trash2Icon className="auth-icon" />
+                                        <span>{loading.delete ? 'Deleting...' : 'Delete Account'}</span>
                                     </button>
                                 </div>
+
                             </>
                         )}
                     </div>
 
                     <div className='edit-charts'>
-                        <Outlet context={(blogCount)=>{
-                            setUserStats(prev=>({
+                        <Outlet context={(blogCount) => {
+                            setUserStats(prev => ({
                                 ...prev,
-                                blogPosts:blogCount
+                                blogPosts: blogCount
                             }))
                         }} />
                     </div>
@@ -432,12 +258,12 @@ export default function EditProfile() {
             </main>
 
             {confirm && (
-                <ConfirmBox 
+                <ConfirmBox
                     text="delete your account?"
-                    confirmFunction={confirmDeleteAccount} 
-                    cancelFunction={() => setConfirm(false)} 
+                    confirmFunction={confirmDeleteAccount}
+                    cancelFunction={() => setConfirm(false)}
                 />
             )}
-        </> 
+        </>
     );
 }

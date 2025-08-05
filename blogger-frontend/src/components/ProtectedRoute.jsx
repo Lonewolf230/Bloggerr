@@ -1,15 +1,4 @@
-// import { Navigate } from "react-router-dom";
-// import { authAPI } from "../api/axios";
 
-// const ProtectedRoute=({children})=>{
-//     const isAuthenticated=authAPI.isAuthenticated()
-//     if(!isAuthenticated){
-//         return <Navigate to="/"/>
-//     }
-//     return children
-// }
-
-// export default ProtectedRoute
 
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../misc/AuthContext';

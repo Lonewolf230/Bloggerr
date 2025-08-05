@@ -37,3 +37,220 @@
     background-color: red;
     color: white;
 }
+
+/* Enhanced Following Components CSS - Blue & Black Theme */
+
+/* Following List Container */
+.following-container {
+    overflow-y: auto;
+    scrollbar-width: none;
+    height: 70vh;
+    border-radius: 16px;
+    background: white;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 119, 204, 0.1);
+    padding: 25px;
+}
+
+.following-container::-webkit-scrollbar {
+    display: none;
+}
+
+/* Following List Title */
+.following-title {
+    color: #1a1a1a;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 25px;
+    text-align: center;
+    background: linear-gradient(135deg, #0077cc 0%, #005fa3 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f1f5f9;
+}
+
+/* Empty State */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 50vh;
+    color: #64748b;
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.empty-state::before {
+    content: "👥";
+    font-size: 3rem;
+    margin-bottom: 15px;
+    opacity: 0.5;
+}
+
+/* Loading State */
+.loading-state {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+}
+
+/* Follower Card */
+.follower-card {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    margin-bottom: 15px;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 16px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 2px solid transparent;
+    text-decoration: none;
+    color: inherit;
+}
+
+.follower-card:hover {
+    background: linear-gradient(135deg, #0077cc 0%, #005fa3 100%);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 119, 204, 0.3);
+    border-color: #0077cc;
+}
+
+.follower-card:active {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(0, 119, 204, 0.4);
+}
+
+/* Follower Avatar */
+.follower-avatar {
+    width: 60px !important;
+    height: 60px !important;
+    border-radius: 50% !important;
+    border: 3px solid #0077cc;
+    margin-right: 20px;
+    transition: all 0.3s ease;
+    object-fit: cover;
+    box-shadow: 0 4px 12px rgba(0, 119, 204, 0.2);
+}
+
+.follower-card:hover .follower-avatar {
+    border-color: white;
+    box-shadow: 0 6px 20px rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+
+/* Follower Username */
+.follower-username {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0;
+    flex: 1;
+    transition: color 0.3s ease;
+}
+
+.follower-card:hover .follower-username {
+    color: white;
+    font-weight: 700;
+}
+
+/* Follower Divider - Remove the HR and use spacing instead */
+.follower-card:not(:last-child) {
+    margin-bottom: 15px;
+}
+
+/* Add some nice animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.follower-card {
+    animation: fadeInUp 0.3s ease-out;
+}
+
+.follower-card:nth-child(even) {
+    animation-delay: 0.1s;
+}
+
+.follower-card:nth-child(odd) {
+    animation-delay: 0.05s;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .following-container {
+        padding: 20px;
+        height: 60vh;
+    }
+    
+    .following-title {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+    }
+    
+    .follower-card {
+        padding: 15px;
+        margin-bottom: 12px;
+    }
+    
+    .follower-avatar {
+        width: 50px !important;
+        height: 50px !important;
+        margin-right: 15px;
+    }
+    
+    .follower-username {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .following-container {
+        padding: 15px;
+        border-radius: 12px;
+    }
+    
+    .following-title {
+        font-size: 1.3rem;
+        margin-bottom: 15px;
+    }
+    
+    .follower-card {
+        padding: 12px;
+        margin-bottom: 10px;
+        border-radius: 12px;
+    }
+    
+    .follower-avatar {
+        width: 45px !important;
+        height: 45px !important;
+        margin-right: 12px;
+    }
+    
+    .follower-username {
+        font-size: 0.95rem;
+    }
+    
+    .empty-state {
+        font-size: 1rem;
+        height: 40vh;
+    }
+    
+    .empty-state::before {
+        font-size: 2.5rem;
+        margin-bottom: 12px;
+    }
+}

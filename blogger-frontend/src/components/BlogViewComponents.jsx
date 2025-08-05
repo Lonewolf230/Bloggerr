@@ -4,6 +4,7 @@ import './CommentThread.css';
 import { AiFillDislike, AiFillLike } from "react-icons/ai";
 import { blogAPI } from "../api/blogAPI.js";
 import { useAuth } from "../misc/AuthContext.jsx";
+import { ThumbsDown, ThumbsDownIcon, ThumbsUp, ThumbsUpIcon } from 'lucide-react';
 
 const Comment = ({ comment, addReply, level = 0, updateCommentList }) => {
   const [isReplying, setIsReplying] = useState(false);
@@ -21,7 +22,6 @@ const Comment = ({ comment, addReply, level = 0, updateCommentList }) => {
           comment.commentId
         );
         
-        // Update the comment list with the new reply
         if (response.result) {
           updateCommentList(response.result.comment);
           setReplyText('');
@@ -113,17 +113,14 @@ const CommentThread = ({ blogId, blogStats, blog, updateBlogStats }) => {
       try {
         const response = await blogAPI.getBlogComments(blogId);
         if (response.result && response.result.comments) {
-          // Organize comments into a tree structure
           const commentMap = new Map();
           const rootComments = [];
 
-          // First pass: create map of all comments
           response.result.comments.forEach(comment => {
             comment.replies = [];
             commentMap.set(comment.commentId, comment);
           });
 
-          // Second pass: build tree structure
           response.result.comments.forEach(comment => {
             if (comment.parentId) {
               const parentComment = commentMap.get(comment.parentId);
@@ -145,15 +142,12 @@ const CommentThread = ({ blogId, blogStats, blog, updateBlogStats }) => {
     fetchComments();
   }, [blogId]);
 
-  // Update comment list after adding a new comment or reply
   const updateCommentList = (newComment) => {
     const addCommentToTree = (commentList) => {
-      // If no parent, add to root
       if (!newComment.parentId) {
         return [...commentList, newComment];
       }
 
-      // Recursive function to add comment to the right place in the tree
       const updateComments = (comments) => {
         return comments.map(comment => {
           if (comment.commentId === newComment.parentId) {
@@ -178,7 +172,6 @@ const CommentThread = ({ blogId, blogStats, blog, updateBlogStats }) => {
     setComments(prevComments => addCommentToTree(prevComments));
   };
 
-  // Handle adding a new comment
   const handleAddComment = async (e) => {
     e.preventDefault();
     if (newComment.trim()) {
@@ -205,22 +198,18 @@ const CommentThread = ({ blogId, blogStats, blog, updateBlogStats }) => {
     }
   };
 
-  // Handle Like functionality
   const handleLike = async () => {
     try {
       if (blogStats.userLiked) {
-        // If already liked, unlike
         await blogAPI.unlike(blogId);
         updateBlogStats({ 
           likes: blogStats.likes - 1,
           userLiked: false
         });
       } else {
-        // If not liked, like (and handle previous dislike)
         await blogAPI.likeBlog(blogId);
         
         if (blogStats.userDisliked) {
-          // If previously disliked, remove dislike
           updateBlogStats({ 
             likes: blogStats.likes + 1,
             dislikes: blogStats.dislikes - 1,
@@ -240,22 +229,18 @@ const CommentThread = ({ blogId, blogStats, blog, updateBlogStats }) => {
     }
   };
 
-  // Handle Dislike functionality
   const handleDislike = async () => {
     try {
       if (blogStats.userDisliked) {
-        // If already disliked, undislike
         await blogAPI.undislike(blogId);
         updateBlogStats({ 
           dislikes: blogStats.dislikes - 1,
           userDisliked: false
         });
       } else {
-        // If not disliked, dislike (and handle previous like)
         await blogAPI.dislikeBlog(blogId);
         
         if (blogStats.userLiked) {
-          // If previously liked, remove like
           updateBlogStats({ 
             dislikes: blogStats.dislikes + 1,
             likes: blogStats.likes - 1,
@@ -282,20 +267,16 @@ const CommentThread = ({ blogId, blogStats, blog, updateBlogStats }) => {
           className='like-dislike' 
           onClick={handleLike}
         >
-          <AiFillLike 
-            size={30} 
-            color={blogStats.userLiked ? 'blue' : ''}
-          />
+
+          <ThumbsUpIcon color={blogStats.userLiked ? '#0077cc' : 'black'} size={30}/>
           <p>{blogStats.likes}</p>
         </div>
         <div 
           className='like-dislike' 
           onClick={handleDislike}
         >
-          <AiFillDislike 
-            size={30} 
-            color={blogStats.userDisliked ? 'blue' : ''}
-          />
+
+          <ThumbsDownIcon size={30} color={blogStats.userDisliked ? '#0077cc' : 'black'}/>
           <p>{blogStats.dislikes}</p>
         </div>        
       </div>

@@ -3,6 +3,7 @@ import "./EditProfileForm.css";
 import { s3Client } from "../../s3config";
 import { Upload } from "@aws-sdk/lib-storage";
 import { userAPI } from "../api/userAPI";
+import { X } from "lucide-react";
 
 export default function EditProfileForm({ showForm, setShowForm, username,onUpdateSuccess }) {
     const [profilePic, setProfilePic] = useState(null);
@@ -101,15 +102,14 @@ export default function EditProfileForm({ showForm, setShowForm, username,onUpda
                                     alignItems:"center",
                                     position:"relative"
                         }}>
-                            <label htmlFor="profilePic">Profile Picture</label>
-                            <label htmlFor="" style={{backgroundColor:"red",
+                            <label htmlFor="profilePic" style={{'color':'#0077cc'}}>Profile Picture</label>
+                            <label htmlFor="" style={{
                                                     cursor:"pointer",
                                                     position:"absolute",
                                                     right:0,
-                                                    padding:"2px 8px",
                                                     borderRadius:"5px",
                                                     color:"white"}}
-                                                    onClick={()=>setShowForm(false)}>x</label>
+                                                    onClick={()=>setShowForm(false)}><X color="red"/></label>
                         </div>
                         <input
                             type="file"
@@ -121,7 +121,7 @@ export default function EditProfileForm({ showForm, setShowForm, username,onUpda
                     </div>
 
                     <div className="about-section">
-                        <label htmlFor="about">About Yourself</label>
+                        <label htmlFor="about" style={{'color':'#0077cc'}}>About Yourself</label>
                         <textarea
                             id="about"
                             placeholder="Type here..."

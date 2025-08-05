@@ -3,6 +3,11 @@
     padding-top: 20px;
 }
 
+.header{
+    color: #0077cc;
+    font-size: 40px;
+}
+
 .options{
     margin: 10px;
     border: none;
@@ -16,6 +21,6 @@
 }
 .options:hover{
     cursor: pointer;
-    background-color: blue;
+    background-color: #0077cc;
     color: white;
 }
