@@ -58,3 +58,6 @@ the variable `JWT_SECRET` is a random string that you use for the JWT authentica
 once done you can run the backend using the command  
 
 `nodemon app.js`
+
+## Additions (Coming Soon)
+Looking to create a recommender system that will suggest similar blogs underneath each blog and also a feature where users can select their interests based on tags and so on and this will enable us to create a more personalised home page.
