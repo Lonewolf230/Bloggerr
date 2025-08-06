@@ -7,6 +7,7 @@ const { UpdateCommand } = require("@aws-sdk/lib-dynamodb");
 const dynamoDB=require('../config/dynamoDBconfig')
 const cognito=require('../config/awsConfig')
 const userModel=require('../models/userModel')
+const misc=require('../models/misc.js')
 require('dotenv').config()
 
 exports.signup=async (req,res)=>{
@@ -54,7 +55,11 @@ exports.login=async (req,res)=>{
     try{
         const command=new InitiateAuthCommand(params)
         const data=await cognito.send(command)
-        res.status(200).json({token:data.AuthenticationResult})
+        const firstTime=await misc.getFirstTime(email.split("@")[0])
+        if(firstTime) await misc.setFirstTime(email.split("@")[0])
+        console.log("Data",data)
+        console.log("First Time:",firstTime)
+        res.status(200).json({token:data.AuthenticationResult,firstTime})
     }
     catch(err){
         console.log(err)

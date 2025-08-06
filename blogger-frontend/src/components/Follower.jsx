@@ -1,3 +1,4 @@
+import './Follow.css'
 export default function Follower({ username }) {
     return (
         <>

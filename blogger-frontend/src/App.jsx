@@ -17,6 +17,21 @@ import { useAuth } from './misc/AuthContext.jsx';
 import ViewProfile from './pages/ViewProfile.jsx';
 import TagSelectionScreen from './pages/Tags.jsx';
 
+function AuthPageWrapper() {
+  const { isAuthenticated, currentUser } = useAuth();
+  
+  if (isAuthenticated) {
+    // If user is already authenticated, redirect based on their status
+    if (currentUser?.firstTime) {
+      return <Navigate to="/tags" replace />;
+    } else {
+      return <Navigate to="/home" replace />;
+    }
+  }
+  
+  return <AuthPage />;
+}
+
 function App() {
 
   const {currentUser}=useAuth()
@@ -30,7 +45,7 @@ function App() {
       <ToastProvider>
         <Router>
           <Routes >
-              <Route path='/' element={isAuthenticated? <Navigate to="/home" replace={true}/>:<AuthPage/>} />
+              <Route path='/' element={<AuthPageWrapper/>} />
               <Route element={<VerifyAccountPage/>} path='/verify'/>
               <Route element={<MainLayout/>} errorElement={<Error/>}>
                 <Route 

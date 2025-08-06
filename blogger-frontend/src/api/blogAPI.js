@@ -43,8 +43,8 @@ export const blogAPI={
         const response=await api.get(`/blog/getBlogs/${author}`)
         return response.data
     },
-    getHomeBlogs:async()=>{
-        const response=await api.get('/blog/getHomeBlogs')
+    getHomeBlogs:async({toFetchStats})=>{
+        const response=await api.get(`/blog/getHomeBlogs?toFetchStats=${toFetchStats}`)
         return response.data
     },
     deleteBlog:async(blogId)=>{

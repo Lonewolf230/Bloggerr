@@ -161,7 +161,6 @@
 
 import './Post.css'
 import { MdOutlineReport } from "react-icons/md";
-import { LuBookmark, LuBookmarkCheck } from "react-icons/lu";
 import { Link } from 'react-router-dom';
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { CgProfile } from "react-icons/cg";

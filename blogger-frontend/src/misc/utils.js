@@ -16,4 +16,12 @@ async function getUserCreationDate(username) {
     }
 }
 
+// async function getFirstTimeStatus(username){
+//     try {
+//         const command=new
+//     } catch (error) {
+        
+//     }
+// }
+
 export {getUserCreationDate}

@@ -86,7 +86,9 @@ function EnhancedSidebar() {
         { icon: "🎯", text: "Focus on one main idea per paragraph" },
         { icon: "🔍", text: "Always proofread before publishing" }
     ];
-
+    const homeStatsRaw = sessionStorage.getItem('homeStats');
+    const homeStats=homeStatsRaw? JSON.parse(homeStatsRaw):null
+    console.log(homeStats)
     return (
         <aside className="sidebar">
             {/* Trending Topics */}
@@ -141,11 +143,11 @@ function EnhancedSidebar() {
                 <h3 className="sidebar-title">📊 Community Stats</h3>
                 <div className="stats-grid">
                     <div className="stat-item">
-                        <div className="stat-number">2.5K</div>
+                        <div className="stat-number">{homeStats.userCount}</div>
                         <div className="stat-label">Active Users</div>
                     </div>
                     <div className="stat-item">
-                        <div className="stat-number">15K</div>
+                        <div className="stat-number">{homeStats.blogCount}</div>
                         <div className="stat-label">Published Posts</div>
                     </div>
                     {/* <div className="stat-item">
@@ -163,17 +165,31 @@ export default function Home() {
     const [loading, setLoading] = useState(false);
     const [homeBlogs, setHomeBlogs] = useState([]);
     const [error, setError] = useState(null);
-
+    let stats={}
     useEffect(() => {
         console.log(currentUser, isAuthenticated);
         localStorage.removeItem('firstTime')
-        const fetchHomeBlogs = async () => {
+        const fetchHomeBlogs = async (shouldFetch) => {
             setLoading(true);
             setError(null);
             try {
-                const response = await blogAPI.getHomeBlogs();
+                const response = await blogAPI.getHomeBlogs({toFetchStats:shouldFetch});
                 console.log(response);
                 setHomeBlogs(response.result.blogs || []);
+
+                if(shouldFetch){
+                    stats={
+                        blogCount: response.result.blogCount,
+                        userCount: response.result.userCount
+                    }
+                    console.log("Stats: ",stats)
+                    cacheStats(stats)
+                    setFetchStatsTTL()
+                }
+                else{
+                    stats=getCachedStats()
+                }
+                
             } catch (error) {
                 console.error("Error fetching home blogs:", error);
                 setError("Failed to load blogs. Please try again later.");
@@ -183,7 +199,9 @@ export default function Home() {
         };
 
         if (currentUser && currentUser.username) {
-            fetchHomeBlogs();
+            const shouldFetch=shouldFetchStats()
+            console.log("Shoud fetch",shouldFetch)
+            fetchHomeBlogs(shouldFetch);
         }
     }, [currentUser, isAuthenticated]);
 
@@ -239,4 +257,35 @@ export default function Home() {
             </section>
         </main>
     );
+}
+
+function shouldFetchStats() {
+    const item = sessionStorage.getItem('toFetchStats');
+    if (!item) return true; 
+
+    try {
+        const { expiresAt } = JSON.parse(item);
+        return Date.now() > expiresAt; 
+    } catch {
+        return true; 
+    }
+}
+
+function setFetchStatsTTL(hours = 3) {
+    const ttl = hours * 60 * 60 * 1000; 
+    const expiresAt = Date.now() + ttl;
+    sessionStorage.setItem('toFetchStats', JSON.stringify({ expiresAt }));
+}
+
+function cacheStats(stats) {
+    sessionStorage.setItem('homeStats', JSON.stringify(stats));
+}
+
+function getCachedStats() {
+    const item = sessionStorage.getItem('homeStats');
+    try {
+        return JSON.parse(item);
+    } catch {
+        return null;
+    }
 }

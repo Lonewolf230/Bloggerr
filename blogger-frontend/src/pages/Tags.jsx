@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 const TagSelectionScreen = () => {
   const [selectedTags, setSelectedTags] = useState(new Set());
 
@@ -29,7 +29,7 @@ const TagSelectionScreen = () => {
       'Celebrity News', 'Reviews', 'Entertainment News'
     ]
   };
-  const navigate=useNavigate();
+  const navigate = useNavigate();
 
   const handleTagClick = (tag) => {
     const newSelectedTags = new Set(selectedTags);
@@ -44,7 +44,7 @@ const TagSelectionScreen = () => {
   const handleContinue = () => {
     console.log('Selected tags:', Array.from(selectedTags));
     // Handle navigation or save preferences
-    navigate('../home',{replace:true})
+    navigate('../home', { replace: true })
   };
 
   const handleSkip = () => {
@@ -62,7 +62,7 @@ const TagSelectionScreen = () => {
       <div style={styles.header}>
         <h1 style={styles.mainTitle}>Choose Your Interests</h1>
         <p style={styles.subtitle}>
-          Select the topics you're interested in to personalize your blogging experience. 
+          Select the topics you're interested in to personalize your blogging experience.
           We'll show you content that matches your preferences.
         </p>
       </div>
@@ -104,19 +104,23 @@ const TagSelectionScreen = () => {
       </div>
 
       <div style={styles.actions}>
-        <button style={styles.skipBtn} onClick={handleSkip}>
-          Skip for Now
-        </button>
-        <button 
-          style={{
-            ...styles.continueBtn,
-            ...(selectedTags.size === 0 ? styles.continueBtn.disabled : {})
-          }}
-          onClick={handleContinue}
-          disabled={selectedTags.size === 0}
-        >
-          Personalise Your Feed
-        </button>
+        <Link to="../home">
+          <button style={styles.skipBtn} onClick={handleSkip}>
+            Skip for Now
+          </button>
+        </Link>
+        <Link to="../home" >
+          <button
+            style={{
+              ...styles.continueBtn,
+              ...(selectedTags.size === 0 ? styles.continueBtn.disabled : {})
+            }}
+            onClick={handleContinue}
+            disabled={selectedTags.size === 0}
+          >
+            Personalise Your Feed
+          </button>
+        </Link>
       </div>
     </div>
   );

@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
   
-  const loadUserFromTokens = () => {
+  const loadUserFromTokens = (firstTime) => {
     const accessToken = Cookies.get("accessToken");
     const idToken = Cookies.get("idToken");
     
@@ -30,7 +30,8 @@ export const AuthProvider = ({ children }) => {
         setCurrentUser({
           isAuthenticated: true,
           username,
-          email
+          email,
+          firstTime
         });
         return true;
       } catch (error) {
@@ -55,7 +56,7 @@ export const AuthProvider = ({ children }) => {
   
   const login = async (email, password) => {
     const response = await authAPI.login(email, password);
-    loadUserFromTokens();
+    loadUserFromTokens(response.firstTime);
     return response;
   };
   

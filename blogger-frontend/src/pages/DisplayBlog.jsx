@@ -28,6 +28,36 @@ export default function DisplayBlog() {
         userDisliked: false
     });
 
+const similarBlogs = [
+        {
+            id: 1,
+            title: "Understanding React Hooks: A Complete Guide",
+            author: "john_developer",
+            excerpt: "Dive deep into React Hooks and learn how to use useState, useEffect, and custom hooks to build powerful React applications...",
+            readTime: "8 min read",
+            likes: 127,
+            publishedDate: "2024-03-15"
+        },
+        {
+            id: 2,
+            title: "Modern CSS Techniques for Better Web Design",
+            author: "sarah_designer",
+            excerpt: "Explore the latest CSS features including Grid, Flexbox, and CSS Variables to create stunning responsive layouts...",
+            readTime: "6 min read",
+            likes: 89,
+            publishedDate: "2024-03-12"
+        },
+        {
+            id: 3,
+            title: "JavaScript Performance Optimization Tips",
+            author: "mike_coder",
+            excerpt: "Learn essential techniques to optimize your JavaScript code for better performance and user experience in web applications...",
+            readTime: "10 min read",
+            likes: 203,
+            publishedDate: "2024-03-10"
+        }
+    ];
+
     // Centralized state update method
     const updateBlogStats = (updates) => {
         setBlogStats(prevStats => ({
@@ -120,7 +150,6 @@ export default function DisplayBlog() {
         );
     }
 
-    // Paywall check
     if (currentUser.username !== blogData.author && !userData.includes(blogData.author)) {
         return (
             <div className="display-blog-container">
@@ -128,8 +157,6 @@ export default function DisplayBlog() {
             </div>
         );
     }
-
-    // For DynamoDB format support
     const content = blogData.content?.S || blogData.content;
 
     return (
@@ -149,6 +176,40 @@ export default function DisplayBlog() {
                     blog={blogData} 
                     updateBlogStats={updateBlogStats}
                 />
+            </div>
+
+            {/* Similar Blogs Section */}
+            <div className="similar-blogs-section">
+                <div className="similar-blogs-container">
+                    <h2 className="similar-blogs-title">Similar Blogs</h2>
+                    <div className="similar-blogs-grid">
+                        {similarBlogs.map((blog) => (
+                            <div key={blog.id} className="similar-blog-card">
+                                <div className="blog-card-header">
+                                    <div className="blog-card-meta">
+                                        <span className="blog-card-author">@{blog.author}</span>
+                                        <span className="blog-card-date">{blog.publishedDate}</span>
+                                    </div>
+                                    <div className="blog-card-stats">
+                                        <span className="blog-card-likes">❤️ {blog.likes}</span>
+                                        <span className="blog-card-read-time">⏱️ {blog.readTime}</span>
+                                    </div>
+                                </div>
+                                
+                                <h3 className="blog-card-title">{blog.title}</h3>
+                                
+                                <p className="blog-card-excerpt">{blog.excerpt}</p>
+                                
+                                <div className="blog-card-footer">
+                                    <button className="blog-card-read-btn">
+                                        Read More
+                                        <span className="btn-arrow">→</span>
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
             </div>
         </div>
     );

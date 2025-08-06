@@ -14,7 +14,8 @@ exports.createUser=async (email,about='',profilePic='')=>{
             profilePic,
             about,
             verified:false,
-            interests:[]
+            interests:[],
+            firstTime:true
         }
     }
 

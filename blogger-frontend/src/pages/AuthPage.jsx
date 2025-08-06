@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState,useEffect } from 'react';
+import {  useNavigate } from 'react-router-dom';
 import { authAPI } from '../api/axios';
 import './Auth.css';
 import { Bars } from 'react-loader-spinner';
@@ -11,7 +11,12 @@ export default function AuthPage() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const navigate = useNavigate();
-    const { login,currentUser } = useAuth();
+    const { login,isAuthenticated } = useAuth();
+    // useEffect(() => {
+    //     if (isAuthenticated) {
+    //         navigate('/home', { replace: true });
+    //     }
+    // }, [isAuthenticated]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -19,7 +24,7 @@ export default function AuthPage() {
             ...prev,
             [name]: value
         }));
-        
+
         if (error) {
             setError('');
         }
@@ -29,22 +34,20 @@ export default function AuthPage() {
         e.preventDefault();
         setLoading(true);
         setError('');
-        
+
         try {
             if (isSignUp) {
                 await authAPI.signup(creds.email, creds.pwd);
-                localStorage.setItem('firstTime','true')
                 navigate('/verify', { state: { email: creds.email } });
             } else {
-                await login(creds.email, creds.pwd);
-                // if()
-                console.log("User",currentUser)
-                const firstTime=localStorage.getItem('firstTime')
-                console.log(firstTime)
-                if(firstTime==='true'){
-                    navigate('/tags',{replace:true})
-                }
+                const res = await login(creds.email, creds.pwd);
+                console.log("res", res);
+                const firstTime = res.firstTime
+                console.log("First Time", firstTime)
+                console.log(typeof firstTime)
+                if(res.firstTime) navigate('/tags',{replace:true})
                 else navigate('/home', { replace: true });
+
             }
         } catch (err) {
             console.error('Authentication error:', err);
@@ -59,7 +62,7 @@ export default function AuthPage() {
         setError('');
         setCreds({ email: "", pwd: "" });
     };
-    
+
     return (
         <main id="auth-main" >
             <section className='form-section'>
@@ -67,44 +70,44 @@ export default function AuthPage() {
                     <h2 className="form-title">
                         {isSignUp ? "Create Account" : "Welcome Back"}
                     </h2>
-                    
+
                     {error && (
                         <div className="error-message" role="alert">
                             {error}
                         </div>
                     )}
-                    
+
                     <div className="input-group">
-                        <input 
-                            type="email" 
-                            name="email" 
-                            id="email" 
-                            placeholder='Enter your email address' 
-                            onChange={handleChange} 
-                            value={creds.email} 
+                        <input
+                            type="email"
+                            name="email"
+                            id="email"
+                            placeholder='Enter your email address'
+                            onChange={handleChange}
+                            value={creds.email}
                             required
                             autoComplete="email"
                             aria-label="Email address"
                         />
                     </div>
-                    
+
                     <div className="input-group">
-                        <input 
-                            type="password" 
-                            name="pwd" 
-                            id="pwd" 
-                            placeholder='Enter your password' 
-                            onChange={handleChange} 
-                            value={creds.pwd} 
-                            minLength={6} 
+                        <input
+                            type="password"
+                            name="pwd"
+                            id="pwd"
+                            placeholder='Enter your password'
+                            onChange={handleChange}
+                            value={creds.pwd}
+                            minLength={6}
                             required
                             autoComplete={isSignUp ? "new-password" : "current-password"}
                             aria-label="Password"
                         />
                     </div>
-                    
-                    <button 
-                        className='login pointer' 
+
+                    <button
+                        className='login pointer'
                         type="submit"
                         disabled={loading || !creds.email || !creds.pwd}
                         aria-label={isSignUp ? "Create account" : "Sign in"}
@@ -124,9 +127,9 @@ export default function AuthPage() {
                             <p>{isSignUp ? "Create Account" : "Sign In"}</p>
                         )}
                     </button>
-                    
-                    <p 
-                        className='auth-toggle pointer' 
+
+                    <p
+                        className='auth-toggle pointer'
                         onClick={toggleAuthMode}
                         role="button"
                         // tabIndex={0}
@@ -140,10 +143,10 @@ export default function AuthPage() {
                     >
                         {!isSignUp ? "New here? Create an account" : "Already have an account? Sign in"}
                     </p>
-                    
+
                 </form>
             </section>
-            
+
             <section id='auth-content'>
                 <div>
                     <h1 className='heading' role="banner">
@@ -152,7 +155,7 @@ export default function AuthPage() {
                     <h4>
                         Your one-stop destination to collaborate and share knowledge with the world
                     </h4>
-                    
+
                     <div className="features" style={{ marginTop: '40px', color: '#64748b' }}>
                         <div className="feature-item">
                             <span style={{ fontSize: '1.5rem', marginRight: '10px' }}>✍️</span>
