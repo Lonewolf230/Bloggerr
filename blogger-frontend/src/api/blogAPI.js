@@ -78,5 +78,13 @@ export const blogAPI={
     getBlogComments:async(blogId)=>{
       const response=await api.get(`/comment/getcomments/${blogId}`)
       return response.data
+    },
+    rewriteSection:async(selectedText,mode)=>{
+      const response=await api.post('/blog/rewriteSection', {selectedText, mode})
+      return response.data
+    },
+    recommendSimilar:async(blog,userId)=>{
+      const response=await api.post('/blog/recommendSimilar',{blog,userId})
+      return response.data
     }
 }

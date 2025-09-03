@@ -119,6 +119,10 @@ export default function EditProfile() {
         }
     };
 
+    const handleTagsSelection = () => {
+        navigate('/tags');
+    }
+
     return (
         <>
             {showForm && (
@@ -163,7 +167,7 @@ export default function EditProfile() {
                                         <br />
                                         <p>from {userData?.user.createdAt ? new Date(userData.user.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'April 2024'}</p>
                                     </div>
-                                    <button className='edit-button' >
+                                    <button className='edit-button' onClick={handleTagsSelection}>
                                         <span>
                                             <Star color='white' size={30}/>
                                         </span>

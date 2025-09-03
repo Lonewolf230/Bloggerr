@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-const TagSelectionScreen = () => {
+const TagSelectionScreen = ({heading='Topics that interest you',subtitle=`Select the topics you're interested in to personalize your blogging experience.\n +
+          We'll show you content that matches your preferences.`,context='onboarding'}) => {
   const [selectedTags, setSelectedTags] = useState(new Set());
 
   const tagCategories = {
@@ -60,16 +61,15 @@ const TagSelectionScreen = () => {
   return (
     <div style={styles.container}>
       <div style={styles.header}>
-        <h1 style={styles.mainTitle}>Choose Your Interests</h1>
+        <h1 style={styles.mainTitle}>Choose {heading}</h1>
         <p style={styles.subtitle}>
-          Select the topics you're interested in to personalize your blogging experience.
-          We'll show you content that matches your preferences.
+          {subtitle}
         </p>
       </div>
 
       <div style={styles.selectedCount}>
         <span style={styles.countText}>
-          {selectedTags.size} interests selected
+          {selectedTags.size} tags selected
         </span>
         {selectedTags.size > 0 && (
           <button style={styles.clearBtn} onClick={clearAllTags}>
@@ -118,7 +118,7 @@ const TagSelectionScreen = () => {
             onClick={handleContinue}
             disabled={selectedTags.size === 0}
           >
-            Personalise Your Feed
+            Proceed
           </button>
         </Link>
       </div>

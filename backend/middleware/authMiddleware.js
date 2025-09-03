@@ -22,51 +22,6 @@ const getJwks=async ()=>{
     }
 }
 
-// exports.verifyToken = async (req, res, next) => {
-//     try {
-//         const token = req.headers.authorization?.split(' ')[1];
-//         if (!token) {
-//             return res.status(401).json({ error: "No token provided" });
-//         }
-
-//         // Decode token to get kid
-//         const decodedToken = jwt.decode(token, { complete: true });
-//         if (!decodedToken) {
-//             return res.status(401).json({ error: "Invalid token format" });
-//         }
-
-//         const { kid } = decodedToken.header;
-//         const jwks = await getJwks();
-//         const jwk = jwks.find(key => key.kid === kid);
-        
-//         if (!jwk) {
-//             return res.status(401).json({ error: "Invalid token - Key not found" });
-//         }
-//         const pem = jwkToPem(jwk);
-//         // Verify token and check if the token's username matches the requested author
-//         jwt.verify(token, pem, { algorithms: ['RS256'] }, (err, decoded) => {
-//             if (err) {
-//                 return res.status(401).json({ error: "Invalid token" });
-//             }
-//             // Get the username from the token
-//             const tokenUsername = decoded.username || decoded['cognito:username'];
-//             // Get the requested author from params
-//             const requestedAuthor = req.params.author;
-//             // Check if the token username matches the requested author
-//             if (tokenUsername !== requestedAuthor) {
-//                 return res.status(403).json({ 
-//                     error: "Unauthorized - You can only access your own blogs" 
-//                 });
-//             }
-//             req.user = decoded;
-//             next();
-//         });
-//     } catch (error) {
-//         console.error('Token verification error:', error);
-//         return res.status(401).json({ error: "Token verification failed" });
-//     }
-// };
-
 
 exports.verifyToken = async (req, res, next) => {
     try {
@@ -110,7 +65,6 @@ exports.verifyToken = async (req, res, next) => {
     }
 };
 
-// Ownership check middleware
 exports.checkBlogOwnership = async (req, res, next) => {
     try {
         const blogId = req.params.id;

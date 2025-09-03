@@ -1,23 +1,36 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
 import MDEditor, { commands } from "@uiw/react-md-editor";
-import {useNavigate} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Upload } from "@aws-sdk/lib-storage";
 import { s3Client } from '../../s3config';
 import { v4 as uuidv4 } from 'uuid';
 import './WritePost.css';
 import GenLoader from '../components/GenLoader.jsx'
-import {useToast} from '../misc/ToastManager.jsx'
+import { useToast } from '../misc/ToastManager.jsx'
 import { useAuth } from "../misc/AuthContext.jsx";
+import { blogAPI } from "../api/blogAPI.js";
+import RemoveMarkdown from "remove-markdown";
+import ExpandableTagSelectionScreen from "./ExpandableTagSelectionScreen.jsx";
 
 export default function WritePost() {
     const [value, setValue] = useState("");
     const [mediaUploads, setMediaUploads] = useState(new Map());
     const [ytIds, setYtIds] = useState([]);
     const [isUploading, setIsUploading] = useState(false);
-    const [blogId]=useState(uuidv4())
-    const navigate=useNavigate()
-    const {showToast}=useToast()
-    const {currentUser}=useAuth()
+    const [blogId] = useState(uuidv4())
+    const navigate = useNavigate()
+    const { showToast } = useToast()
+    const { currentUser } = useAuth()
+    const [textAreaEl, setTextAreaEl] = useState(null);
+    const [menuVisible, setMenuVisible] = useState(false);
+    const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
+    const menuRef = useRef(null);
+    const [lastEdit, setLastEdit] = useState(null)
+    const [rewriting, setRewriting] = useState(false)
+    const countRef = useRef(0);
+    const [userSelectedTags, setUserSelectedTags] = useState(new Set());
+
 
     const createPreviewUrl = useCallback((file) => {
         return URL.createObjectURL(file);
@@ -28,8 +41,7 @@ export default function WritePost() {
         if (file) {
             const uploadId = uuidv4();
             const previewUrl = createPreviewUrl(file);
-            
-            // Add to uploads map
+
             setMediaUploads(prev => new Map(prev).set(uploadId, {
                 file,
                 previewUrl,
@@ -37,15 +49,13 @@ export default function WritePost() {
                 uploaded: false
             }));
 
-            // Insert appropriate markdown/HTML based on media type
             let contentToAdd = '';
             if (mediaType === 'image') {
                 contentToAdd = `<div style="display: flex; justify-content: center; width: 100%;">
                 <img src="${previewUrl}" alt="${file.name}" style="max-width: 600px; height: auto;" />
             </div>`
             } else if (mediaType === 'video') {
-                contentToAdd = `
-<div style="display: flex; justify-content: center;">
+                contentToAdd = `<div style="display: flex; justify-content: center;">
     <video width="500" height="360" controls>
         <source src="${previewUrl}" type="video/mp4" />
         <source src="${previewUrl}" type="video/quicktime" />
@@ -61,8 +71,7 @@ export default function WritePost() {
     const handleYouTubeEmbed = useCallback(() => {
         const videoId = prompt("Enter YouTube Video ID:");
         if (videoId) {
-            const embedCode = `
-<div style="display: flex; justify-content: center;">
+            const embedCode = `<div style="display: flex; justify-content: center;">
     <iframe 
         width="560" 
         height="315" 
@@ -77,7 +86,7 @@ export default function WritePost() {
         }
     }, []);
 
-    const uploadToS3 = async (file, fileType,index) => {
+    const uploadToS3 = async (file, fileType, index) => {
         const fileExtension = file.name.split('.').pop();
         const key = `${fileType}s/${blogId}_${index}.${fileExtension}`;
 
@@ -107,22 +116,19 @@ export default function WritePost() {
         try {
             let imageUploads = [];
             let videoUploads = [];
-            
-            // Upload all files and replace URLs
+
             let index = 0;
             for (const [uploadId, upload] of mediaUploads.entries()) {
                 if (!upload.uploaded) {
                     const s3Url = await uploadToS3(upload.file, upload.type, index++);
                     updatedContent = updatedContent.replace(upload.previewUrl, s3Url);
-                    
-                    // Store the URL in the appropriate array
+
                     if (upload.type === 'image') {
                         imageUploads.push(s3Url);
                     } else if (upload.type === 'video') {
                         videoUploads.push(s3Url);
                     }
-                    
-                    // Mark as uploaded
+
                     setMediaUploads(prev => {
                         const newMap = new Map(prev);
                         newMap.set(uploadId, { ...upload, uploaded: true, url: s3Url });
@@ -130,19 +136,26 @@ export default function WritePost() {
                     });
                 }
             }
+            const plaintext = RemoveMarkdown(updatedContent);
+            console.log("Printing plaintext");
 
-            // Prepare blog post data
+            console.log(plaintext)
+            console.log(userSelectedTags);
+            const tagsArray = Array.from(userSelectedTags);
+            console.log("tags Array",tagsArray)
+            
             const blogPost = {
                 blogId,
                 email: currentUser.email,
                 content: updatedContent,
+                plaintext,
                 imgIds: imageUploads,
                 vidIds: videoUploads,
-                ytIds: ytIds
+                ytIds: ytIds,
+                tags:tagsArray
             };
 
-            // Send to your backend
-            const response = await fetch('http://localhost:5000/api/blog/postblog', {
+            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/blog/postblog`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -155,7 +168,6 @@ export default function WritePost() {
                 throw new Error('Failed to save blog post');
             }
 
-            // Clear form
             setValue("");
             setMediaUploads(new Map());
             setYtIds([]);
@@ -169,8 +181,107 @@ export default function WritePost() {
             setIsUploading(false);
         }
     };
-    
-    return(
+
+    const handleContextMenu = (e) => {
+        const selection = window.getSelection()?.toString();
+        if (selection && selection.trim().length > 0) {
+            e.preventDefault();
+            setMenuPosition({ x: e.pageX, y: e.pageY });
+            setMenuVisible(true);
+        }
+        else setMenuVisible(false);
+    }
+
+    useEffect(() => {
+        const editor = menuRef.current;
+        if (editor) editor.addEventListener("contextmenu", handleContextMenu);
+        return () => {
+            if (editor) editor.removeEventListener("contextmenu", handleContextMenu);
+        }
+    }, [])
+
+    useEffect(() => {
+        const close = () => {
+            setMenuVisible(false);
+        }
+        document.addEventListener("click", close);
+        return () => {
+            document.removeEventListener("click", close);
+        };
+    }, []);
+
+    useEffect(() => {
+        if (menuRef.current) {
+            const textarea = menuRef.current.querySelector(
+                ".w-md-editor-text-input"
+            )
+            setTextAreaEl(textarea);
+        }
+    }, [menuRef.current]);
+
+    const generateAlternateContent = async (mode) => {
+        if (countRef.current == 5) {
+            showToast("You have reached the maximum limit of 5 rewrites per session", 'error')
+            return;
+        }
+        countRef.current += 1;
+        if (!textAreaEl) return;
+
+        const start = textAreaEl.selectionStart;
+        const end = textAreaEl.selectionEnd;
+
+        if (start === end) {
+            showToast('Please select some text', 'info')
+            return;
+        }
+
+        const selectedText = value.slice(start, end);
+        console.log("Selected text: ", selectedText)
+        try {
+            setRewriting(true)
+            const response = await blogAPI.rewriteSection(selectedText, mode)
+            console.log(response.result)
+            setLastEdit({ oldText: selectedText, newText: response.result, start, end });
+
+            const newValue = value.slice(0, start) + response.result + '\n' + value.slice(end);
+            setValue(newValue);
+        } catch (error) {
+            console.log(error.message)
+            showToast("Oops coudn't generate content", 'error')
+        }
+        finally {
+            setRewriting(false)
+        }
+    }
+    const revertLastEdit = () => {
+        if (!lastEdit) return;
+
+        const { oldText, start, end, newText } = lastEdit;
+
+        const revertedValue =
+            value.slice(0, start) + oldText + value.slice(start + newText.length);
+        setValue(revertedValue);
+
+        setLastEdit(null);
+    };
+    useEffect(() => {
+        if (rewriting) {
+            showToast('Rewriting your content...', 'info');
+        }
+    }, [rewriting]);
+
+    const handleTagsChange = (newTags) => {
+        setUserSelectedTags(new Set(newTags));
+        console.log('Tags updated in parent:', newTags);
+    };
+
+    const handleSaveTags = () => {
+        const tagsArray = Array.from(userSelectedTags);
+        console.log('Saving tags to backend:', tagsArray);
+    };
+
+
+    return (
         <div className="container">
             {isUploading && <GenLoader text='Uploading blog...' />}
 
@@ -203,31 +314,53 @@ export default function WritePost() {
                     />
                 </button>
 
-                <button 
-                    className="options" 
+                <button
+                    className="options"
                     onClick={handleYouTubeEmbed}
                 >
                     Embed YouTube Video
                 </button>
+
+                {lastEdit && <button onClick={revertLastEdit} className="options" style={{ "backgroundColor": "red", "color": "white" }}>🪄 Revert Your Changes</button>}
+
             </div>
 
-            <MDEditor
-                value={value}
-                onChange={setValue}
-                visibleDragbar={true}
-                height={600}
-                preview="edit"
-                commands={commands.getCommands().filter(cmd => cmd.name !== 'image')}
-            />
-            
-            <button 
-                className="options" 
+            <div ref={menuRef}>
+                <MDEditor
+                    value={value}
+                    onChange={(val) => setValue(val || "")}
+                    visibleDragbar={true}
+                    height={600}
+                    preview="edit"
+                    commands={commands.getCommands().filter(cmd => cmd.name !== 'image')}
+                />
+            </div>
+
+            {menuVisible && (
+                <div
+                    style={{ top: menuPosition.y, left: menuPosition.x }}
+                    className="popup-menu-x9 absolute"
+                >
+                    <h4 style={{ "textAlign": 'center', "color": "blue" }}>Rewrite</h4>
+                    <button className="popup-btn-x9" onClick={() => generateAlternateContent("simple")}>Simple</button>
+                    <button className="popup-btn-x9" onClick={() => generateAlternateContent("academic")}>Academic</button>
+                    <button className="popup-btn-x9" onClick={() => generateAlternateContent("genz lingo")}>Gen Z</button>
+                    <button className="popup-btn-x9" onClick={() => generateAlternateContent("formal")}>Formal</button>
+                    <button className="popup-btn-x9" onClick={() => generateAlternateContent("standard")}>Standard</button>
+                </div>
+            )}
+
+            <button
+                className="options"
                 onClick={handlePostBlog}
                 disabled={isUploading}
                 style={{ marginTop: "20px" }}
             >
                 {isUploading ? 'Publishing...' : 'Post blog'}
             </button>
+
+            <ExpandableTagSelectionScreen onTagsChange={handleTagsChange} initialSelectedTags={userSelectedTags} />
+
         </div>
     );
 }

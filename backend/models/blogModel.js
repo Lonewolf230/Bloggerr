@@ -1,9 +1,10 @@
 const {v4:uuidv4} = require("uuid");
 const { PutCommand, UpdateCommand, GetCommand,DeleteCommand,ScanCommand,QueryCommand } = require("@aws-sdk/lib-dynamodb");
 const dynamoDB = require('../config/dynamoDBconfig');
-const {}=require('@aws-sdk/client-dynamodb')
+const {}=require('@aws-sdk/client-dynamodb');
+const indexBlog = require("../middleware/embeddings");
 
-exports.createBlog = async (blogId,username,content,imgIds,vidIds,ytIds) => {
+exports.createBlog = async (blogId,username,content,plaintext,imgIds,vidIds,ytIds,tags) => {
     try {
         // First check if user exists
         const getUserCommand = new GetCommand({
@@ -29,13 +30,14 @@ exports.createBlog = async (blogId,username,content,imgIds,vidIds,ytIds) => {
                 author: username,
                 createdAt: new Date().toISOString(),
                 content,
+                plaintext,
                 likes: [],
                 dislikes: [],
                 comments: 0,
                 imgIds,
                 vidIds,
                 ytIds,
-                relevantTags:[]
+                tags
             }
         };
 
@@ -54,6 +56,7 @@ exports.createBlog = async (blogId,username,content,imgIds,vidIds,ytIds) => {
 
         await dynamoDB.send(new PutCommand(blogParams));
         await dynamoDB.send(new UpdateCommand(updateUserParams));
+        await indexBlog(blogParams.Item)        
 
         return {
             success: true,
