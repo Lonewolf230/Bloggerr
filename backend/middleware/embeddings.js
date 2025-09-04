@@ -1,7 +1,7 @@
 const pinecone=require('@pinecone-database/pinecone')
-const openai=require('openai')
+const OpenAI=require('openai')
 
-const openAI= new openai.OpenAI({
+const openAI= new OpenAI({
     apiKey:process.env.OPEN_AI_KEY
 })
 const pc=new pinecone.Pinecone({
@@ -10,9 +10,11 @@ const pc=new pinecone.Pinecone({
 const index=pc.Index('blogs')
 
 exports.indexBlog=async(blog)=>{
+
+    const newText=`${blog.plaintext}+\n+\n+Tags:${blog.tags.join(", ")}`
     const embedding= await openAI.embeddings.create({
         model:"text-embedding-3-small",
-        input:blog.plaintext,
+        input:newText,
         dimensions:512,
 
     })

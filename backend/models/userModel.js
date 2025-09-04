@@ -80,6 +80,61 @@ exports.editUser = async (currentUsername, profilePic, about) => {
     }
 };
 
+exports.editTags = async (username, tagsToAdd, tagsToRemove) => {
+    try {
+        const getParams = {
+            TableName: "users",
+            Key: { username }
+        };
+        
+        const getCurrentUser = await dynamoDB.send(new GetCommand(getParams));
+        let currentInterests = getCurrentUser.Item?.interests || [];
+        
+        console.log("Current interests:", currentInterests);
+        console.log("Tags to add:", tagsToAdd);
+        console.log("Tags to remove:", tagsToRemove);
+        
+        if (tagsToRemove && tagsToRemove.length > 0) {
+            currentInterests = currentInterests.filter(tag => !tagsToRemove.includes(tag));
+        }
+        
+        if (tagsToAdd && tagsToAdd.length > 0) {
+            tagsToAdd.forEach(tag => {
+                if (!currentInterests.includes(tag)) {
+                    currentInterests.push(tag);
+                }
+            });
+        }
+        
+        console.log("Updated interests:", currentInterests);
+        
+        const updateParams = {
+            TableName: "users",
+            Key: { username },
+            UpdateExpression: "SET interests = :interests",
+            ExpressionAttributeValues: {
+                ":interests": currentInterests
+            },
+            ReturnValues: "UPDATED_NEW"
+        };
+        
+        const result = await dynamoDB.send(new UpdateCommand(updateParams));
+        
+        return {
+            success: true,
+            message: "Tags updated successfully",
+            updatedUser: result.Attributes
+        };
+        
+    } catch (error) {
+        console.error("Error updating tags:", error);
+        return {
+            success: false,
+            message: "Error updating tags",
+            error: error.message
+        };
+    }
+};
 
 
 exports.followUser = async (currentUsername, targetUsername) => {

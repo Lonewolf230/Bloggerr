@@ -1,12 +1,20 @@
 const {v4:uuidv4} = require("uuid");
-const { PutCommand, UpdateCommand, GetCommand,DeleteCommand,ScanCommand,QueryCommand } = require("@aws-sdk/lib-dynamodb");
+const { PutCommand, UpdateCommand, GetCommand,DeleteCommand,ScanCommand,QueryCommand,BatchGetCommand } = require("@aws-sdk/lib-dynamodb");
 const dynamoDB = require('../config/dynamoDBconfig');
 const {}=require('@aws-sdk/client-dynamodb');
 const indexBlog = require("../middleware/embeddings");
+const OpenAI=require('openai')
+const pinecone=require('@pinecone-database/pinecone')
+const pc=new pinecone.Pinecone({
+    apiKey:process.env.PINECONE_API_KEY
+})
+const index=pc.Index('blogs')
 
+const openAI= new OpenAI({
+    apiKey:process.env.OPEN_AI_KEY
+})
 exports.createBlog = async (blogId,username,content,plaintext,imgIds,vidIds,ytIds,tags) => {
     try {
-        // First check if user exists
         const getUserCommand = new GetCommand({
             TableName: "users",
             Key: { username }
@@ -14,7 +22,6 @@ exports.createBlog = async (blogId,username,content,plaintext,imgIds,vidIds,ytId
 
         const userResponse = await dynamoDB.send(getUserCommand);
         
-        // If user doesn't exist in the users table
         if (!userResponse.Item) {
             return {
                 success: false,
@@ -22,7 +29,6 @@ exports.createBlog = async (blogId,username,content,plaintext,imgIds,vidIds,ytId
             };
         }
 
-        // If user exists, proceed with blog creation
         const blogParams = {
             TableName: "blogs",
             Item: {
@@ -41,7 +47,6 @@ exports.createBlog = async (blogId,username,content,plaintext,imgIds,vidIds,ytId
             }
         };
 
-        // Create blog and update user in a transaction
         const updateUserParams = {
             TableName: "users",
             Key: { username },
@@ -95,35 +100,6 @@ exports.getBlog=async (blogId)=>{
     }
 }
 
-// exports.getBlogs = async (author) => {
-//     console.log(author)
-//     if(!author){
-//         throw new Error("Author name is required")
-//     }
-//     const params = {
-//         TableName: "blogs",
-//         IndexName: "author-index",
-//         KeyConditionExpression: "#author = :author",
-//         ExpressionAttributeNames: {
-//             "#author": "author"
-//         },
-//         ExpressionAttributeValues: {
-//             ":author": { S: author }
-//         }
-//     };
-
-//     try {
-//         const command = new QueryCommand(params);
-//         const result = await dynamoDB.send(command);
-//         console.log("Retrieved blogs:", result.Items);
-//         const items=result.Items || []
-//         return {success:true,blogs:items};
-//     } catch (err) {
-//         console.error("Error getting blogs:", err);
-//         return {success:false,message:err.message}
-//     }
-// };
-
 exports.getBlogs = async (author) => {
     console.log(author);
     if(!author){
@@ -148,294 +124,6 @@ exports.getBlogs = async (author) => {
     } catch (err) {
         console.error("Error getting blogs:", err);
         return {success: false, message: err.message};
-    }
-};
-
-// exports.getHomeblogs=async(username)=>{
-//     if(!username){
-//         throw new Error("Username is required")
-//     }
-//     const fiveHoursAgo=new Date()
-//     fiveHoursAgo.setHours(fiveHoursAgo.getHours()-5)
-//     const fiveHoursAgoISOString=fiveHoursAgo.toISOString()
-//     const params={
-//         TableName:"blogs",
-
-//     }
-//     let followingUsers=[]
-//     try {
-//         const userParams={
-//             TableName:"users",
-//             Key:{username}
-//         }
-//         const userData=await dynamoDB.send(new GetCommand(userParams))
-//         if(userData.Item && userData.Item.following){
-//             followingUsers=userData.Item.following || []
-//         }
-//     }
-//     catch (error) {
-//         console.error("Error getting user data:",error)
-//         throw new Error("Error getting user data")
-//     }
-
-//     try{
-//         const recentBlogsParams={
-//             TableName:"blogs",
-//             FilterExpression:"createdAt >= :timeAgo",
-//             ExpressionAttributeValues:{
-//                 ":timeAgo":fiveHoursAgoISOString
-//             }
-//         }
-//         const recentBlogsData=await dynamoDB.send(new QueryCommand(recentBlogsParams))
-//         const recentBlogs=recentBlogsData.Items || []
-//         if(followingUsers.length===0){
-//             return recentBlogs
-//         }
-//         const followingBlogsParams={
-//             TableName:"blogs",
-//             FilterExpression:"author IN (:authors)",
-//             ExpressionAttributeValues:{
-//                 ":authors":followingUsers
-//             }
-//         }
-//         let followingBlogs=[]
-//         if(followingUsers.length>0){
-//             followingBlogs=await
-//         }
-//     }
-//     catch(err){
-        
-//     }
-// }
-
-// exports.getHomeblogs = async (username) => {
-//     if (!username) {
-//         throw new Error("Username is required");
-//     }
-//     console.log(username)
-    
-//     const fiveHoursAgo = new Date();
-//     fiveHoursAgo.setHours(fiveHoursAgo.getHours() - 5);
-//     const fiveHoursAgoISOString = fiveHoursAgo.toISOString();
-    
-//     let followingUsers = [];
-//     try {
-//         const userParams = {
-//             TableName: "users",
-//             Key: { username }
-//         };
-//         const userData = await dynamoDB.send(new GetCommand(userParams));
-//         if (userData.Item && userData.Item.following) {
-//             followingUsers = userData.Item.following || [];
-//         }
-//     } catch (error) {
-//         console.error("Error getting user data:", error);
-//         throw new Error("Error getting user data");
-//     }
-
-//     try {
-//         // Get recent blogs (last 5 hours)
-//         const recentBlogsParams = {
-//             TableName: "blogs",
-//             FilterExpression: "createdAt >= :timeAgo",
-//             ExpressionAttributeValues: {
-//                 ":timeAgo": fiveHoursAgoISOString
-//             }
-//         };
-        
-//         // Use ScanCommand instead of QueryCommand for filtering by date
-//         const recentBlogsCommand = new ScanCommand(recentBlogsParams);
-//         const recentBlogsData = await dynamoDB.send(recentBlogsCommand);
-//         const recentBlogs = recentBlogsData.Items || [];
-        
-//         // If user doesn't follow anyone, just return recent blogs
-//         if (followingUsers.length === 0) {
-//             return {
-//                 success: true,
-//                 blogs: recentBlogs
-//             };
-//         }
-        
-//         // Get blogs from followed users
-//         let followingBlogs = [];
-//         if (followingUsers.length > 0) {
-//             // Since DynamoDB doesn't directly support IN operator with multiple values efficiently,
-//             // we'll run separate queries for each followed user and combine results
-//             followingBlogs = await Promise.all(followingUsers.map(async (followedUser) => {
-//                 const followingBlogsParams = {
-//                     TableName: "blogs",
-//                     IndexName: "author-index",
-//                     KeyConditionExpression: "#author = :author",
-//                     ExpressionAttributeNames: {
-//                         "#author": "author"
-//                     },
-//                     ExpressionAttributeValues: {
-//                         ":author": { S: followedUser }
-//                     }
-//                 };
-                
-//                 const followingBlogsCommand = new QueryCommand(followingBlogsParams);
-//                 const result = await dynamoDB.send(followingBlogsCommand);
-//                 return result.Items || [];
-//             }));
-            
-//             // Flatten the array of arrays
-//             followingBlogs = followingBlogs.flat();
-//         }
-        
-//         // Combine both sets of blogs and remove duplicates
-//         const allBlogs = [...recentBlogs];
-        
-//         followingBlogs.forEach(blog => {
-//             // Convert DynamoDB format to regular JavaScript object if needed
-//             const processedBlog = blog.blogId ? blog : {
-//                 blogId: blog.blogId.S,
-//                 author: blog.author.S,
-//                 createdAt: blog.createdAt.S,
-//                 content: blog.content.S,
-//                 likes: blog.likes ? parseInt(blog.likes.N, 10) : 0,
-//                 dislikes: blog.dislikes ? parseInt(blog.dislikes.N, 10) : 0,
-//                 comments: blog.comments ? parseInt(blog.comments.N, 10) : 0
-//             };
-            
-//             // Skip if this blog is already in recentBlogs
-//             const isDuplicate = recentBlogs.some(recentBlog => 
-//                 recentBlog.blogId === processedBlog.blogId
-//             );
-            
-//             if (!isDuplicate) {
-//                 allBlogs.push(processedBlog);
-//             }
-//         });
-        
-//         // Sort blogs by createdAt (newest first)
-//         allBlogs.sort((a, b) => {
-//             const dateA = new Date(a.createdAt);
-//             const dateB = new Date(b.createdAt);
-//             return dateB - dateA;
-//         });
-        
-//         return {
-//             success: true,
-//             blogs: allBlogs
-//         };
-//     } catch (err) {
-//         console.error("Error fetching blogs:", err);
-//         return {
-//             success: false,
-//             message: err.message
-//         };
-//     }
-// };
-
-exports.getHomeblogs = async (username) => {
-    if (!username) {
-        throw new Error("Username is required");
-    }
-    console.log(username)
-    
-    const fiveHoursAgo = new Date();
-    fiveHoursAgo.setHours(fiveHoursAgo.getHours() - 5);
-    const fiveHoursAgoISOString = fiveHoursAgo.toISOString();
-    
-    let followingUsers = [];
-    try {
-        const userParams = {
-            TableName: "users",
-            Key: { username }
-        };
-        const userData = await dynamoDB.send(new GetCommand(userParams));
-        if (userData.Item && userData.Item.following) {
-            followingUsers = userData.Item.following || [];
-        }
-    } catch (error) {
-        console.error("Error getting user data:", error);
-        throw new Error("Error getting user data");
-    }
-
-    try {
-        // Get recent blogs (last 5 hours)
-        const recentBlogsParams = {
-            TableName: "blogs",
-            FilterExpression: "createdAt >= :timeAgo",
-            ExpressionAttributeValues: {
-                ":timeAgo": fiveHoursAgoISOString
-            }
-        };
-        
-        const recentBlogsCommand = new ScanCommand(recentBlogsParams);
-        const recentBlogsData = await dynamoDB.send(recentBlogsCommand);
-        const recentBlogs = recentBlogsData.Items || [];
-        
-        // If user doesn't follow anyone, just return recent blogs
-        if (followingUsers.length === 0) {
-            return {
-                success: true,
-                blogs: recentBlogs
-            };
-        }
-        
-        // Get blogs from followed users
-        let followingBlogs = [];
-        if (followingUsers.length > 0) {
-            // We need to use a different approach for each author
-            
-            // Create a function to get blogs for a single author
-            const getBlogsForAuthor = async (author) => {
-                const followingBlogsParams = {
-                    TableName: "blogs",
-                    IndexName: "author-index",
-                    KeyConditionExpression: "author = :author",
-                    ExpressionAttributeValues: {
-                        ":author": author
-                    }
-                };
-                
-                const followingBlogsCommand = new QueryCommand(followingBlogsParams);
-                const result = await dynamoDB.send(followingBlogsCommand);
-                return result.Items || [];
-            };
-            
-            // Get blogs for each followed user
-            const followingBlogsResults = await Promise.all(
-                followingUsers.map(author => getBlogsForAuthor(author))
-            );
-            
-            // Flatten the array of arrays
-            followingBlogs = followingBlogsResults.flat();
-        }
-        
-        // Combine both sets of blogs and remove duplicates
-        const allBlogs = [...recentBlogs];
-        
-        followingBlogs.forEach(blog => {
-            // Skip if this blog is already in recentBlogs
-            const isDuplicate = recentBlogs.some(recentBlog => 
-                recentBlog.blogId === blog.blogId
-            );
-            
-            if (!isDuplicate) {
-                allBlogs.push(blog);
-            }
-        });
-        
-        // Sort blogs by createdAt (newest first)
-        allBlogs.sort((a, b) => {
-            const dateA = new Date(a.createdAt);
-            const dateB = new Date(b.createdAt);
-            return dateB - dateA;
-        });
-        
-        return {
-            success: true,
-            blogs: allBlogs
-        };
-    } catch (err) {
-        console.error("Error fetching blogs:", err);
-        return {
-            success: false,
-            message: err.message
-        };
     }
 };
 
@@ -599,7 +287,6 @@ exports.dislike = async (blogId, username) => {
             };
         }
 
-        // Check if user already disliked the blog
         const dislikes = blogResult.Item.dislikes || [];
         if (dislikes.includes(username)) {
             return {
@@ -612,7 +299,6 @@ exports.dislike = async (blogId, username) => {
         const userLikeIndex=likes.indexOf(username)
         let updateParams;
 
-        // Update blog dislikes
         if(userLikeIndex !==-1){
             updateParams = {
                 TableName: "blogs",
@@ -700,3 +386,266 @@ exports.undislike = async (blogId, username) => {
         };
     }
 };
+
+exports.getHomeBlogs = async (username, options = {}) => {
+    if (!username) {
+        throw new Error("Username is required");
+    }
+
+    const {
+        page = 0,
+        limit = 5,
+        toFetchStats = false
+    } = options;
+
+    console.log(`Loading blogs for ${username}, page ${page}, limit ${limit}`);
+
+    let userInterests = [];
+    let followingUsers = [];
+    let userData = null;
+
+    try {
+        const userParams = {
+            TableName: "users",
+            Key: { username }
+        };
+        userData = await dynamoDB.send(new GetCommand(userParams));
+        
+        if (userData.Item) {
+            followingUsers = userData.Item.following || [];
+            userInterests = userData.Item.interests || userData.Item.tags || [];
+        }
+    } catch (error) {
+        console.error("Error getting user data:", error);
+        throw new Error("Error getting user data");
+    }
+
+    try {
+        let allBlogs = [];
+        let stats = null;
+
+        // For page 0, get mix of recent + following + interest-based + stats
+        if (page === 0) {
+            const twentyFourHoursAgo = new Date();
+            twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
+            const recentBlogsParams = {
+                TableName: "blogs",
+                FilterExpression: "createdAt >= :timeAgo AND author <> :username",
+                ExpressionAttributeValues: {
+                    ":timeAgo": twentyFourHoursAgo.toISOString(),
+                    ":username": username
+                }
+            };
+            
+            const recentBlogsCommand = new ScanCommand(recentBlogsParams);
+            const recentBlogsData = await dynamoDB.send(recentBlogsCommand);
+            const recentBlogs = recentBlogsData.Items || [];
+
+            // Get following blogs if user follows anyone
+            let followingBlogs = [];
+            if (followingUsers.length > 0) {
+                const followingBlogsPromises = followingUsers.slice(0, 10).map(async (author) => {
+                    const params = {
+                        TableName: "blogs",
+                        IndexName: "author-index",
+                        KeyConditionExpression: "author = :author",
+                        ExpressionAttributeValues: { ":author": author },
+                        ScanIndexForward: false,
+                        Limit: 10
+                    };
+                    const result = await dynamoDB.send(new QueryCommand(params));
+                    return result.Items || [];
+                });
+
+                const followingResults = await Promise.all(followingBlogsPromises);
+                followingBlogs = followingResults.flat();
+            }
+
+            const blogMap = new Map();
+            
+            // Add recent blogs
+            recentBlogs.forEach(blog => {
+                if (!blogMap.has(blog.blogId)) {
+                    blogMap.set(blog.blogId, { ...blog, source: 'recent' });
+                }
+            });
+
+            // Add following blogs (these get priority)
+            followingBlogs.forEach(blog => {
+                if (!blogMap.has(blog.blogId)) {
+                    blogMap.set(blog.blogId, { ...blog, source: 'following' });
+                }
+            });
+
+            allBlogs = Array.from(blogMap.values());
+
+            if (toFetchStats) {
+                const [blogCountResult, userCountResult] = await Promise.all([
+                    dynamoDB.send(new ScanCommand({
+                        TableName: "blogs",
+                        Select: "COUNT"
+                    })),
+                    dynamoDB.send(new ScanCommand({
+                        TableName: "users",
+                        Select: "COUNT"
+                    }))
+                ]);
+
+                stats = {
+                    blogCount: blogCountResult.Count || 0,
+                    userCount: userCountResult.Count || 0
+                };
+            }
+        } else {
+            // For subsequent pages, use the new simplified strategy
+            allBlogs = await getPersonalizedContent(username, userInterests, page, limit);
+        }
+
+        allBlogs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+        let paginatedBlogs = allBlogs;
+        let hasMore = false;
+
+        if (page === 0) {
+            const startIndex = page * limit;
+            const endIndex = startIndex + limit;
+            paginatedBlogs = allBlogs.slice(startIndex, endIndex);
+            hasMore = endIndex < allBlogs.length || allBlogs.length === limit;
+        } else {
+            hasMore = allBlogs.length === limit;
+        }
+
+        const result = {
+            blogs: paginatedBlogs,
+            hasMore,
+            totalCount: paginatedBlogs.length
+        };
+
+        if (stats) {
+            result.blogCount = stats.blogCount;
+            result.userCount = stats.userCount;
+        }
+
+        return {
+            success: true,
+            result
+        };
+
+    } catch (err) {
+        console.error("Error fetching blogs:", err);
+        return {
+            success: false,
+            message: err.message
+        };
+    }
+};
+
+async function fetchBlogsByIds(blogIds) {
+    if (!blogIds || blogIds.length === 0) return [];
+
+    const keys = blogIds.map(id => ({ blogId: id }));
+
+    const params = {
+        RequestItems: {
+            blogs: {
+                Keys: keys
+            }
+        }
+    };
+
+    const result = await dynamoDB.send(new BatchGetCommand(params));
+    return result.Responses.blogs || [];
+}
+
+async function getBlogsByInterests(username, interests, page, neededCount) {
+    try {
+        if (!interests || interests.length === 0) return [];
+
+        const queryText = interests.join(", ");
+        const embeddingRes = await openAI.embeddings.create({
+            model: "text-embedding-3-small",
+            input: queryText,
+            dimensions: 512
+        });
+
+        const userVector = embeddingRes.data[0].embedding;
+        
+        const fetchCount = (page + 1) * neededCount * 3; 
+        
+        const pineconeRes = await index.query({
+            vector: userVector,
+            topK: Math.min(fetchCount, 100),
+            includeMetadata: true
+        });
+
+        const blogIds = (pineconeRes.matches || [])
+            .filter(match => match.metadata && match.metadata.author !== username)
+            .map(match => match.metadata.blogId)
+            .filter(blogId => !!blogId);
+
+        const startIndex = page * neededCount;
+        const paginatedIds = blogIds.slice(startIndex, startIndex + neededCount);
+        
+        return await fetchBlogsByIds(paginatedIds);
+
+    } catch (error) {
+        console.error("Error getting interest-based blogs:", error);
+        return [];
+    }
+}
+
+async function getRandomBlogs(username, page, neededCount) {
+    try {
+        const params = {
+            TableName: "blogs",
+            FilterExpression: "author <> :username",
+            ExpressionAttributeValues: {
+                ":username": username
+            }
+        };
+
+        const command = new ScanCommand(params);
+        const result = await dynamoDB.send(command);
+        const allBlogs = result.Items || [];
+
+        const shuffled = allBlogs.sort(() => 0.5 - Math.random());
+        const startIndex = page * neededCount;
+        
+        return shuffled.slice(startIndex, startIndex + neededCount);
+    } catch (error) {
+        console.error("Error getting random blogs:", error);
+        return [];
+    }
+}
+
+async function getPersonalizedContent(username, userInterests, page, limit) {
+    try {
+        const interestBlogsPromise = getBlogsByInterests(username, userInterests, page, 3);
+        const randomBlogsPromise = getRandomBlogs(username, page, 2);
+
+        const [interestBlogs, randomBlogs] = await Promise.all([
+            interestBlogsPromise,
+            randomBlogsPromise
+        ]);
+
+        const allBlogs = [
+            ...interestBlogs.map(blog => ({ ...blog, source: 'interest' })),
+            ...randomBlogs.map(blog => ({ ...blog, source: 'random' }))
+        ];
+
+        const blogMap = new Map();
+        allBlogs.forEach(blog => {
+            if (!blogMap.has(blog.blogId)) {
+                blogMap.set(blog.blogId, blog);
+            }
+        });
+
+        const uniqueBlogs = Array.from(blogMap.values());
+        
+        return uniqueBlogs.slice(0, limit);
+
+    } catch (error) {
+        console.error("Error in getPersonalizedContent:", error);
+        return [];
+    }
+}

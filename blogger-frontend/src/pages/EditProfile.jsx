@@ -31,43 +31,36 @@ export default function EditProfile() {
         mostLikes: 0
     });
     const { logout, currentUser, refreshUserData } = useAuth()
-    // Function to fetch user data and blogs
     const fetchUserData = async () => {
         if (!currentUser || !currentUser.username) return;
 
         setLoading(prev => ({ ...prev, data: true }));
         try {
-            // Fetch blogs
             const blogResponse = await blogAPI.getBlogs(currentUser.username);
             console.log("Fetched blogs:", blogResponse);
             if (blogResponse && blogResponse.result && blogResponse.result.blogs) {
                 setUserBlogs(blogResponse.result.blogs);
 
-                // Update the number of blogs in stats
                 setUserStats(prev => ({
                     ...prev,
                     blogPosts: blogResponse.result.blogs.length || 0
                 }));
             }
 
-            // Fetch user profile data if you have such an API
             try {
                 const userResponse = await userAPI.getProfile();
                 console.log(userResponse)
                 setUserData(userResponse);
                 console.log("User response:", userResponse);
-                // Update user stats if available in response
                 if (userResponse) {
                     setUserStats(prev => ({
                         ...prev,
                         followers: userResponse.user.followers?.length || 0,
                         following: userResponse.user.following?.length || 0,
-                        // Other stats if available
                     }));
                 }
             } catch (err) {
                 console.warn("Could not fetch user profile:", err);
-                // If this fails, we still have the blogs data
             }
         } catch (err) {
             console.error("Error fetching user data:", err);
@@ -76,7 +69,6 @@ export default function EditProfile() {
         }
     };
 
-    // Initial data fetch
     useEffect(() => {
         if (currentUser && currentUser.username) {
             fetchUserData();
@@ -120,7 +112,7 @@ export default function EditProfile() {
     };
 
     const handleTagsSelection = () => {
-        navigate('/tags');
+        navigate('/tags',{state:{preSelectedTags:userData?.user?.interests||[]}});
     }
 
     return (

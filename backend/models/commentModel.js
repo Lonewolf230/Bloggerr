@@ -4,7 +4,6 @@ const dynamoDB = require('../config/dynamoDBconfig');
 
 exports.createComment = async (blogId,username,content, parentId = null) => {
     try {
-        // Check if blog exists
         const getBlogCommand = new GetCommand({
             TableName: "blogs",
             Key: { blogId }
@@ -56,7 +55,6 @@ exports.createComment = async (blogId,username,content, parentId = null) => {
             }
         };
 
-        // Update blog's comment count
         const updateBlogParams = {
             TableName: "blogs",
             Key: { blogId },

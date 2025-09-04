@@ -10,7 +10,7 @@ const commentRoutes=require('./routes/commentRoutes')
 const app=express()
 
 app.use(cors({
-    origin:'http://localhost:5173',
+    origin:process.env.REACT_URL || 'http://localhost:5173',
     credentials:true,
     
 }))

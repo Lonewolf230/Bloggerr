@@ -15,13 +15,12 @@ import ProtectedRoute from './components/ProtectedRoute.jsx';
 import VerifyAccountPage from './pages/VerifyAccountPage.jsx';
 import { useAuth } from './misc/AuthContext.jsx';
 import ViewProfile from './pages/ViewProfile.jsx';
-import TagSelectionScreen from './pages/Tags.jsx';
+import TagSelectionScreenWrapper from './pages/Tags.jsx';
 
 function AuthPageWrapper() {
   const { isAuthenticated, currentUser } = useAuth();
   
   if (isAuthenticated) {
-    // If user is already authenticated, redirect based on their status
     if (currentUser?.firstTime) {
       return <Navigate to="/tags" replace />;
     } else {
@@ -56,7 +55,7 @@ function App() {
                     </ProtectedRoute>
                   } 
                 />
-                <Route element={<TagSelectionScreen/>} path='/tags'/>
+                <Route element={<TagSelectionScreenWrapper/>} path='/tags'/>
                 <Route element={<ProtectedRoute><WritePost/></ProtectedRoute>} path='/writepost'/>
                 <Route element={<ProtectedRoute><EditProfile/></ProtectedRoute>} path='/profile'>
                   <Route index element={<BlogList/>} />

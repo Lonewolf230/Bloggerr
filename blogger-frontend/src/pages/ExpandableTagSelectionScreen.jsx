@@ -94,29 +94,29 @@ const ExpandableTagSelectionScreen = ({
   const [expandedSections, setExpandedSections] = useState(new Set(['Technology'])); // Technology expanded by default
 
   const tagCategories = {
-    'Technology': [
+'Technology': [
       'Web Development', 'Mobile Apps', 'AI & Machine Learning', 'Data Science',
-      'Cybersecurity', 'Cloud Computing', 'DevOps', 'Programming', 'Software Engineering'
+      'Cybersecurity', 'Cloud Computing', 'DevOps', 'Programming', 'Software Engineering','React.js','Node.js','Django','Flask','Machine Learning','Deep Learning','NLP','Computer Vision','AWS','Azure','Kubernetes','Docker','Agile Methodologies','Microservices','Blockchain','IoT','AR/VR','Quantum Computing','5G Technology','Edge Computing','Robotics','Automation','Big Data','Data Visualization','Data Engineering','R Programming','Scala','Hadoop','Spark'
     ],
     'Lifestyle': [
       'Health & Fitness', 'Travel', 'Food & Cooking', 'Fashion', 'Home & Garden',
-      'Relationships', 'Self Improvement', 'Mindfulness', 'Productivity'
+      'Relationships', 'Self Improvement', 'Mindfulness', 'Productivity','Yoga','Meditation','Vegan Recipes','Interior Design','Personal Finance','Mental Health','Work-Life Balance','Sustainable Living','Parenting','Beauty Tips'
     ],
     'Business': [
       'Entrepreneurship', 'Marketing', 'Finance', 'Leadership', 'Startup',
-      'E-commerce', 'Digital Marketing', 'Business Strategy', 'Personal Branding'
+      'E-commerce', 'Digital Marketing', 'Business Strategy', 'Personal Branding','SEO','Content Marketing','Social Media Marketing','Investment Strategies','Cryptocurrency','Project Management','Sales Techniques','Customer Experience','Business Analytics','Remote Work','Gig Economy'
     ],
     'Creative': [
       'Photography', 'Design', 'Writing', 'Art', 'Music', 'Film & Video',
-      'Creative Writing', 'Graphic Design', 'Content Creation'
+      'Creative Writing', 'Graphic Design', 'Content Creation','Illustration','Animation','UX/UI Design','Poetry','Songwriting','Filmmaking','Video Editing','Podcasting','Creative Entrepreneurship'
     ],
     'Education': [
       'Learning', 'Online Courses', 'Career Development', 'Study Tips',
-      'Skills Development', 'Tutorials', 'Book Reviews', 'Research'
+      'Skills Development', 'Tutorials', 'Book Reviews', 'Research','Language Learning','Coding Tutorials','Career Advice','Academic Research','E-learning Platforms','Time Management','Exam Preparation','Scholarships','Educational Technology'
     ],
     'Entertainment': [
       'Movies', 'TV Shows', 'Gaming', 'Books', 'Sports', 'Pop Culture',
-      'Celebrity News', 'Reviews', 'Entertainment News'
+      'Celebrity News', 'Reviews', 'Entertainment News','Video Games','Board Games','Comics & Graphic Novels','Fantasy Sports','Movie Reviews','TV Show Recaps','Music Reviews','Concerts & Festivals'
     ]
   };
 

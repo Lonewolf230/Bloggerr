@@ -783,3 +783,121 @@
 .sidebar {
     animation: fadeInUp 0.6s ease-out 0.2s both;
 }
+
+/* Add these styles to your Home.css */
+
+.loading-more {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    gap: 1rem;
+}
+
+.loading-more p {
+    color: #666;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.end-message {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+    border-top: 1px solid #eee;
+    margin-top: 1rem;
+}
+
+.end-message p {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.retry-btn {
+    background: #0077cc;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+    transition: background 0.2s;
+}
+
+.retry-btn:hover {
+    background: #005fa3;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: #666;
+}
+
+.empty-state h3 {
+    margin: 0 0 1rem 0;
+    color: #333;
+}
+
+.empty-state p {
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Smooth loading transitions */
+.main-post-scroll {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Loading skeleton (optional enhancement) */
+.post-skeleton {
+    background: #f5f5f5;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.post-skeleton .skeleton-line {
+    height: 1rem;
+    background: #ddd;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+}
+
+.post-skeleton .skeleton-line:nth-child(1) {
+    width: 70%;
+}
+
+.post-skeleton .skeleton-line:nth-child(2) {
+    width: 90%;
+}
+
+.post-skeleton .skeleton-line:nth-child(3) {
+    width: 60%;
+}

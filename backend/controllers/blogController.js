@@ -2,7 +2,7 @@ const { fetchRecommendedBlogs } = require('../middleware/bulkFetch')
 const { recommendSimilar } = require('../middleware/embeddings')
 const blogModel = require('../models/blogModel')
 const misc = require('../models/misc')
-const openai = require('openai')
+const OpenAI = require('openai')
 exports.createBlog = async (req, res) => {
     const { blogId, email, content,plaintext, imgIds, vidIds, ytIds ,tags} = req.body
     try {
@@ -50,27 +50,49 @@ exports.getBlogs = async (req, res) => {
     }
 }
 
+
 exports.getHomeBlogs = async (req, res) => {
-    const username = req.user.username
-    const toFetch = String(req.body.toFetchStats).toLowerCase() === 'true';
+    const username = req.user.username;
+    
+    const page = parseInt(req.query.page) || 0;
+    const limit = parseInt(req.query.limit) || 5;
+    const toFetch = String(req.query.toFetchStats).toLowerCase() === 'true';
 
     try {
-        console.log("to fetch: ", toFetch)
-        const result = await blogModel.getHomeblogs(username)
-        if (toFetch) {
-            const { userCount, blogCount } = await misc.getHomeStats()
-            result.userCount = userCount
-            result.blogCount = blogCount
-        }
+        console.log(`Getting home blogs for ${username}, page: ${page}, limit: ${limit}, toFetch: ${toFetch}`);
+        
+        const result = await blogModel.getHomeBlogs(username, {
+            page,
+            limit,
+            toFetchStats: toFetch
+        });
+
+        console.log("Result from model:", result);
+        console.log("Result success flag:", result.result.blogs);
+        console.log(result.result.blogs.length)
+        
         if (result.success === false) {
-            return res.status(500).json({ message: "Home Blogs retrieval failed", error: result.message })
+            return res.status(500).json({ 
+                message: "Home Blogs retrieval failed",
+                success: false, 
+                error: result.message 
+            });
         }
-        return res.status(200).json({ message: "Home Blogs retrieved successfully:", result })
+
+        return res.status(200).json({ 
+            message: "Home Blogs retrieved successfully", 
+            success: true,
+            result: result.result 
+        });
+    } catch (err) {
+        console.error("Error in getHomeBlogs controller:", err);
+        return res.status(500).json({ 
+            success: false,
+            message: "Home Blogs retrieval failed", 
+            error: err.message 
+        });
     }
-    catch (err) {
-        return res.status(500).json({ message: "Home Blogs retrieval failed", error: err.message })
-    }
-}
+};
 
 exports.deleteBlog = async (req, res) => {
     const blogId = req.params.id
@@ -192,7 +214,7 @@ exports.rewriteSection = async (req, res) => {
     const sectionBody = req.body.selectedText;
     const mode = req.body.mode;
     try {
-        const openAI = new openai.OpenAI({
+        const openAI = new OpenAI({
             apiKey: process.env.OPEN_AI_KEY,
         });
 
@@ -226,28 +248,6 @@ exports.rewriteSection = async (req, res) => {
         });
     }
 };
-
-
-// exports.rewriteSection=async(req,res)=>{
-//     const sectionBody=req.body.selectedText
-//     const mode=req.body.mode
-//     try {
-//         // const openAI=new openai.OpenAI({
-//         //     apiKey:process.env.OPEN_AI_KEY
-//         // })
-//         // const chatCompletion=await openAI.chat.completions.create({
-//         //     messages:[{role:"user", content:` Rewrite the following section of a blog in ${mode} manner while maintaining the overall meaning. Also make sure the markdown syntax is maintained. The content: ${sectionBody}`}],
-//         //     model:"gpt-3.5-turbo"
-//         // })
-//         console.log(sectionBody);
-        
-//         const content='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-//         res.status(200).json({message:"Section rewritten successfully", result:content})
-//     } catch (error) {
-//         console.log(error);
-//         res.status(500).json({message:"Section rewriting failed", error:error.message})
-//     }
-// }
 
 exports.recommendSimilar=async(req,res)=>{
     const blog=req.body.blog;

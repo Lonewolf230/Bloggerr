@@ -106,3 +106,28 @@ exports.getProfileByUsername=async(req, res)=>{
         return res.status(500).json({message:"User not found", error:err.message})
     }
 }
+
+exports.editTags=async(req,res)=>{
+    const username=req.user.username
+    const tagsToAdd=req.body.tagsToAdd
+    const tagsToRemove=req.body.tagsToRemove
+
+    try {
+        const result=await userModel.editTags(username,tagsToAdd,tagsToRemove)
+        console.log("Tag update result: ",result);
+        if(result.success==false){
+            return res.status(500).json({
+                message:"Tag update failed",
+                error:result.message
+            })
+        }
+        return res.status(200).json({
+            message:"Tags updated successfully",
+            result:result
+        })
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).json({message:"Tag update failed",error:error.message})
+    }
+}
+

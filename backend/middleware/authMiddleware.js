@@ -1,31 +1,31 @@
 const jwt = require('jsonwebtoken');
-const axios=require('axios')
-const jwkToPem=require('jwk-to-pem')
-const blogModel=require('../models/blogModel')
+const axios = require('axios')
+const jwkToPem = require('jwk-to-pem')
+const blogModel = require('../models/blogModel')
 require('dotenv').config()
 
-let jwks=null
-const region=process.env.REGION
-const userPoolId=process.env.USER_POOL_ID
+let jwks = null
+const region = process.env.REGION
+const userPoolId = process.env.USER_POOL_ID
 
-const getJwks=async ()=>{
-    if(jwks) return jwks
+const getJwks = async () => {
+    if (jwks) return jwks
 
-    try{
-        const url=`https://cognito-idp.${region}.amazonaws.com/${userPoolId}/.well-known/jwks.json`
-        const response=await axios.get(url)
-        jwks=response.data.keys
+    try {
+        const url = `https://cognito-idp.${region}.amazonaws.com/${userPoolId}/.well-known/jwks.json`
+        const response = await axios.get(url)
+        jwks = response.data.keys
         return jwks
     }
-    catch(err){
-        console.error("Error fetching jwks:",err)
+    catch (err) {
+        console.error("Error fetching jwks:", err)
     }
 }
 
-
 exports.verifyToken = async (req, res, next) => {
     try {
-        const token = req.headers.authorization?.split(' ')[1] || req.cookies.accessToken
+        const token = req.cookies.accessToken || req.headers.authorization?.split(' ')[1];
+        
         if (!token) {
             return res.status(401).json({ error: "No token provided" });
         }
@@ -38,7 +38,7 @@ exports.verifyToken = async (req, res, next) => {
         const { kid } = decodedToken.header;
         const jwks = await getJwks();
         const jwk = jwks.find(key => key.kid === kid);
-        
+
         if (!jwk) {
             return res.status(401).json({ error: "Invalid token - Key not found" });
         }
@@ -47,20 +47,26 @@ exports.verifyToken = async (req, res, next) => {
 
         jwt.verify(token, pem, { algorithms: ['RS256'] }, (err, decoded) => {
             if (err) {
+                res.clearCookie('accessToken');
+                res.clearCookie('refreshToken');
+                res.clearCookie('idToken');
                 return res.status(401).json({ error: "Invalid token" });
             }
 
-            // Normalize username (remove @domain.com if present)
             const tokenUsername = decoded.username || decoded['cognito:username'];
             req.user = {
                 ...decoded,
                 username: tokenUsername.includes('@') ? tokenUsername.split('@')[0] : tokenUsername
             };
-            
+
             next();
         });
     } catch (error) {
         console.error('Token verification error:', error);
+        // Clear cookies on error
+        res.clearCookie('accessToken');
+        res.clearCookie('refreshToken');
+        res.clearCookie('idToken');
         return res.status(401).json({ error: "Token verification failed" });
     }
 };
@@ -69,7 +75,7 @@ exports.checkBlogOwnership = async (req, res, next) => {
     try {
         const blogId = req.params.id;
         const blogResult = await blogModel.getBlog(blogId);
-        
+
         if (!blogResult.success || !blogResult.blog) {
             return res.status(404).json({
                 message: "Blog not found",
@@ -93,4 +99,3 @@ exports.checkBlogOwnership = async (req, res, next) => {
         });
     }
 };
-

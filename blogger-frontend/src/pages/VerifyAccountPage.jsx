@@ -13,7 +13,6 @@ export default function VerifyAccountPage() {
     const email = location.state?.email || '';
     const {showToast}=useToast()
     
-    // Redirect to auth page if email is not provided
     if (!email) {
         navigate('/');
     }
@@ -25,7 +24,6 @@ export default function VerifyAccountPage() {
         
         try {
             await authAPI.verify(email, verificationCode);
-            // After successful verification, redirect to login
             showToast('User verified successfully, Please login to Continue!', 'success');
             setTimeout(() => {
                 navigate('/');
