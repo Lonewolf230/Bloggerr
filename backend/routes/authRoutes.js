@@ -1,5 +1,5 @@
 const express=require('express')
-const {signup,login,verifyUser,logout, deleteUser,getCurrentUser,checkAuth}=require('../controllers/authController')
+const {signup,login,verifyUser,logout, deleteUser,getCurrentUser,checkAuth, signupTestUser, deleteTestUser}=require('../controllers/authController')
 const {followUser,unfollowUser, editUserProfile, getProfile, getProfileByUsername, editTags}=require('../controllers/userController')
 const {verifyToken}=require('../middleware/authMiddleware')
 const router=express.Router()
@@ -27,7 +27,8 @@ router.get("/check", verifyToken, (req, res) => {
   });
 });
 
-
+router.post('/signupTestUser',signupTestUser)
+router.delete('/deleteTestUser',deleteTestUser)
 
 
 

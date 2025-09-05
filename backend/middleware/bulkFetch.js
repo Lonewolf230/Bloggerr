@@ -1,5 +1,5 @@
 const { BatchGetItemCommand } = require("@aws-sdk/client-dynamodb")
-const { marshall,unmarshall } = require("@aws-sdk/util-dynamodb")
+const { unmarshall } = require("@aws-sdk/util-dynamodb")
 const docClient = require("../config/dynamoDBconfig")
 
 exports.fetchRecommendedBlogs = async (blogIds) => {

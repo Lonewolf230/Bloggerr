@@ -5,7 +5,7 @@ import { Upload } from "@aws-sdk/lib-storage";
 import { userAPI } from "../api/userAPI";
 import { X } from "lucide-react";
 
-export default function EditProfileForm({ showForm, setShowForm, username,onUpdateSuccess }) {
+export default function EditProfileForm({ showForm, setShowForm, username, onUpdateSuccess }) {
     const [profilePic, setProfilePic] = useState(null);
     const [profilePicFile, setProfilePicFile] = useState(null);
     const [aboutText, setAboutText] = useState("");
@@ -14,10 +14,10 @@ export default function EditProfileForm({ showForm, setShowForm, username,onUpda
     const handleImageChange = (event) => {
         const file = event.target.files[0];
         if (file) {
-            setProfilePicFile(file); 
+            setProfilePicFile(file);
             const reader = new FileReader();
             reader.onloadend = () => {
-                setProfilePic(reader.result); 
+                setProfilePic(reader.result);
             };
             reader.readAsDataURL(file);
         }
@@ -55,17 +55,17 @@ export default function EditProfileForm({ showForm, setShowForm, username,onUpda
             if (profilePicFile) {
                 profilePicUrl = await uploadToS3(profilePicFile, username);
             }
-            const body={
-                profilePic:profilePicUrl,
-                about:aboutText
+            const body = {
+                profilePic: profilePicUrl,
+                about: aboutText
             }
 
             const data = await userAPI.editProfile(body);
             console.log("API Response:", data);
-            if (data.success || data.message==="Profile updated successfully") {
+            if (data.success || data.message === "Profile updated successfully") {
                 alert("Profile updated successfully!");
                 setShowForm(false);
-                if(onUpdateSuccess){
+                if (onUpdateSuccess) {
                     onUpdateSuccess();
                 }
             } else {
@@ -96,20 +96,32 @@ export default function EditProfileForm({ showForm, setShowForm, username,onUpda
             <div className="edit-profile-form">
                 <form onSubmit={handleSubmit}>
                     <div className="profile-pic-container">
-                        <div style={{display:"flex",
-                                    justifyContent:"space-between",
-                                    width:"100%",
-                                    alignItems:"center",
-                                    position:"relative"
+                        <div style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            width: "100%",
+                            alignItems: "center",
+                            position: "relative"
                         }}>
-                            <label htmlFor="profilePic" style={{'color':'#0077cc'}}>Profile Picture</label>
-                            <label htmlFor="" style={{
-                                                    cursor:"pointer",
-                                                    position:"absolute",
-                                                    right:0,
-                                                    borderRadius:"5px",
-                                                    color:"white"}}
-                                                    onClick={()=>setShowForm(false)}><X color="red"/></label>
+                            <label htmlFor="profilePic" style={{ 'color': '#0077cc' }}>Profile Picture</label>
+                            <label
+                                style={{
+                                    cursor: "pointer",
+                                    position: "absolute",
+                                    right: 0,
+                                    background: "rgba(0,0,0,0.05)",
+                                    borderRadius: "8px",
+                                    padding: "4px",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    transition: "background 0.3s"
+                                }}
+                                onClick={() => setShowForm(false)}
+                            >
+                                <X color="#ff4d4f" />
+                            </label>
+
                         </div>
                         <input
                             type="file"
@@ -121,7 +133,7 @@ export default function EditProfileForm({ showForm, setShowForm, username,onUpda
                     </div>
 
                     <div className="about-section">
-                        <label htmlFor="about" style={{'color':'#0077cc'}}>About Yourself</label>
+                        <label htmlFor="about" style={{ 'color': '#0077cc' }}>About Yourself</label>
                         <textarea
                             id="about"
                             placeholder="Type here..."

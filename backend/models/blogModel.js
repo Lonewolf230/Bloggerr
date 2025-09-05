@@ -2,7 +2,7 @@ const {v4:uuidv4} = require("uuid");
 const { PutCommand, UpdateCommand, GetCommand,DeleteCommand,ScanCommand,QueryCommand,BatchGetCommand } = require("@aws-sdk/lib-dynamodb");
 const dynamoDB = require('../config/dynamoDBconfig');
 const {}=require('@aws-sdk/client-dynamodb');
-const indexBlog = require("../middleware/embeddings");
+const {indexBlog} = require("../middleware/embeddings.js");
 const OpenAI=require('openai')
 const pinecone=require('@pinecone-database/pinecone')
 const pc=new pinecone.Pinecone({
@@ -427,7 +427,7 @@ exports.getHomeBlogs = async (username, options = {}) => {
         // For page 0, get mix of recent + following + interest-based + stats
         if (page === 0) {
             const twentyFourHoursAgo = new Date();
-            twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
+            twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 200);
             const recentBlogsParams = {
                 TableName: "blogs",
                 FilterExpression: "createdAt >= :timeAgo AND author <> :username",

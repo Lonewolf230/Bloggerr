@@ -68,8 +68,10 @@ exports.getHomeBlogs = async (req, res) => {
         });
 
         console.log("Result from model:", result);
-        console.log("Result success flag:", result.result.blogs);
         console.log(result.result.blogs.length)
+        result.result.blogs.forEach(blog => {
+            console.log(`Blog ID: ${blog.blogId}`);
+        })
         
         if (result.success === false) {
             return res.status(500).json({ 

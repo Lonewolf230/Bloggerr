@@ -1,70 +1,19 @@
-// import axios from "axios";
-// import Cookies from "js-cookie";
 
-// const api = axios.create({
-//   baseURL: import.meta.env.VITE_REACT_APP_API_URL || "/api",
-//   withCredentials: true,
-//   headers: {
-//     "Content-Type": "application/json",
-//   },
-// });
-
-// // Add Authorization header dynamically
-// api.interceptors.request.use(
-//   (config) => {
-//     const token = Cookies.get("accessToken");
-//     if (token) {
-//       config.headers.Authorization = `Bearer ${token}`;
-//     }
-//     return config;
-//   },
-//   (error) => Promise.reject(error)
-// );
-
-// // Handle 401 Unauthorized errors
-// api.interceptors.response.use(
-//   (response) => response,
-//   async (error) => {
-//     if (error.response?.status === 401) {
-//       Cookies.remove("accessToken");
-//       Cookies.remove("refreshToken");
-//       window.location.href = "/";
-//     }
-//     return Promise.reject(error);
-//   }
-// );
 import axios from "axios"
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_REACT_APP_API_URL || '/api',
-  withCredentials: true, // This ensures cookies are sent with requests
+  withCredentials: true, 
   headers: {
     'Content-Type': 'application/json'
   }
 })
 
-// No need for request interceptor since cookies are handled automatically
-// api.interceptors.response.use(
-//   (response) => response,
-//   async (error) => {
-//     const originalRequest = error.config;
-
-//     if (error.response && error.response.status === 401 && !originalRequest._retry) {
-//       originalRequest._retry = true;
-
-//       // Redirect to login page on authentication failure
-//       window.location.href = '/';
-//       return Promise.reject(error);
-//     }
-//     return Promise.reject(error);
-//   }
-// );
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    // Skip redirect for checkAuth to avoid loops
     if (originalRequest.url.includes("/auth/check")) {
       return Promise.reject(error);
     }

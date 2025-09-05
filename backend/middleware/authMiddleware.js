@@ -63,7 +63,6 @@ exports.verifyToken = async (req, res, next) => {
         });
     } catch (error) {
         console.error('Token verification error:', error);
-        // Clear cookies on error
         res.clearCookie('accessToken');
         res.clearCookie('refreshToken');
         res.clearCookie('idToken');
