@@ -19,8 +19,8 @@ app.use(cookieParser())
 app.use('/api/auth',authRoutes)
 app.use('/api/blog',blogRoutes)
 app.use('/api/comment',commentRoutes)
-const PORT=process.env.PORT || 5000;
+const PORT=process.env.PORT || 8080;
 
-app.listen(PORT,()=>{
+app.listen(PORT,"0.0.0.0",()=>{
     console.log(`Server running on port ${PORT}`)
 })

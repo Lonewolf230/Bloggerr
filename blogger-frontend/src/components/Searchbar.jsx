@@ -1,7 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import {  ScanCommand } from '@aws-sdk/lib-dynamodb';
 import './Search.css'; 
-import { docClient } from '../../dynamoDBconfig';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../misc/AuthContext';
 
@@ -11,7 +9,7 @@ const SearchBar = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const searchRef = useRef(null);
-  const {currentUser}=useAuth()
+  const { currentUser } = useAuth();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -44,17 +42,23 @@ const SearchBar = () => {
     setIsLoading(true);
     
     try {
+      const response = await fetch(
+        `${import.meta.env.VITE_REACT_APP_API_URL}/auth/users?q=${encodeURIComponent(term)}&limit=10`,
+        {
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        }
+      );
 
-      const command = new ScanCommand({
-        TableName: 'users', 
-        FilterExpression: 'begins_with(username, :searchTerm)',
-        ExpressionAttributeValues: {
-          ':searchTerm': term
-        },
-        Limit: 10 // Limit results to improve performance
-      });
-      const response = await docClient.send(command);
-      setResults(response.Items || []);
+      if (!response.ok) {
+        throw new Error('Search request failed');
+      }
+
+      const data = await response.json();
+      setResults(data.users || []);
     } catch (error) {
       console.error('Error fetching usernames:', error);
       setResults([]);
@@ -92,8 +96,8 @@ const SearchBar = () => {
           {results.length > 0 ? (
             results.map((user) => (
                 <Link 
-                 to={currentUser.username===user.username?
-                    `/profile`:`/otherProfile/${user.username}`}
+                 to={currentUser.username === user.username ?
+                    `/profile` : `/otherProfile/${user.username}`}
                  key={user.username}
                  className='user-suggestion'>
                     <div 

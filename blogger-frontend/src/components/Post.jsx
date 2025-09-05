@@ -272,7 +272,7 @@ export default function Post({ blog }) {
     const readingTime = calculateReadingTime(content);
 
     return (
-        <Link to={`/blog/${getBlogId(blog)}`} style={{ textDecoration: "none" }}>
+        <Link to={`/blog/${getBlogId(blog)}`} style={{ textDecoration: "none" }} state={blog}>
             <article id='post'>
                 <header className="post-author-section">
                     <img 
@@ -355,31 +355,6 @@ export default function Post({ blog }) {
                             loading="lazy"
                         />
                         
-                        {/* <div className='post-foot-right'>
-                            <div 
-                                className="post-action-btn"
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    console.log("Report blog");
-                                }}
-                                role="button"
-                                aria-label="Report blog"
-                                tabIndex={0}
-                            >
-                                <MdOutlineReport />
-                            </div>
-                            
-                            <div 
-                                className={`post-action-btn ${isBookmarked ? 'active' : ''}`}
-                                onClick={handleBookmark}
-                                role="button"
-                                aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
-                                tabIndex={0}
-                            >
-                                {isBookmarked ? <LuBookmarkCheck /> : <LuBookmark />}
-                            </div>
-                        </div> */}
                     </div>
                 </section>
             </article>

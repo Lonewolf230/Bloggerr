@@ -12,8 +12,9 @@ import { useAuth } from "../misc/AuthContext.jsx";
 import { userAPI } from "../api/userAPI.js";
 import { InfinitySpin, Oval } from "react-loader-spinner";
 import PaywallGradientOverlay from "../components/Paywall.jsx";
-import GenLoader from "../components/GenLoader.jsx";
-import { LoaderCircleIcon } from "lucide-react";
+// import GenLoader from "../components/GenLoader.jsx";
+// import { LoaderCircleIcon } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 export default function DisplayBlog() {
     const { blogId } = useParams();
@@ -31,6 +32,11 @@ export default function DisplayBlog() {
     });
     const [loadingSimilar, setLoadingSimilar] = useState(false);
     const [recommendedBlogs, setRecommendedBlogs] = useState([])
+    const location=useLocation();
+
+
+    const blogState= location.state || {}; 
+
 
     const similarBlogs = [
         {
@@ -88,7 +94,22 @@ export default function DisplayBlog() {
     useEffect(() => {
         const fetchBlog = async () => {
             setLoading(true);
+            console.log("Blog State",blogState);
             try {
+                if(blogState && blogState.blogId===blogId){
+                    console.log("Using blog data from navigation state");
+                    setBlogData(blogState)
+                    setBlogStats({
+                        likes: blogState.likes?.length || 0,
+                        dislikes: blogState.dislikes?.length || 0,
+                        comments: blogState.comments?.length || 0,
+                        userLiked: blogState.likes?.includes(currentUser.username) || false,
+                        userDisliked: blogState.dislikes?.includes(currentUser.username) || false
+                    })
+                    setLoading(false);
+                    return;
+                }
+                console.log("Fetching blog data from API for blogId:", blogId);
                 const data = await blogAPI.getBlog(blogId);
                 const blog = data.result.blog;
 
@@ -218,7 +239,7 @@ export default function DisplayBlog() {
                 ) : (
                     <div className="similar-blogs-grid">
                         {recommendedBlogs.map((blog) => (
-                            <Link to={`../blog/${blog.blogId}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                            <Link to={`../blog/${blog.blogId}`} style={{ textDecoration: 'none', color: 'inherit' }} key={blog.blogId}>
                                 <div key={blog.blogId} className="similar-blog-card">
                                     <div className="blog-card-header">
                                         <div className="blog-card-meta">

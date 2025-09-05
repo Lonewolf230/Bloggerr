@@ -27,3 +27,8 @@ dist-ssr
 # Add these lines to your .gitignore file
 
 *.env
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+backend.zip

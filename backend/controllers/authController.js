@@ -96,29 +96,30 @@ exports.login = async (req, res) => {
         const firstTime = await misc.getFirstTime(email.split("@")[0])
         if (firstTime) await misc.setFirstTime(email.split("@")[0])
         const isProduction = process.env.NODE_ENV === 'production';
+        const isHttps = req.protocol === 'https' || req.headers['x-forwarded-proto'] === 'https'; 
         console.log("Is Production:", isProduction);
 
         res.cookie('accessToken', data.AuthenticationResult.AccessToken, {
             httpOnly: true,
-            secure: isProduction,                        
-            sameSite: isProduction ? "none" : "lax",     // none for cross-site prod, lax for local dev
-            domain: isProduction ? ".yourdomain.com" : "localhost",
+            secure: isHttps,                        
+            sameSite: isHttps ? "none" : "lax",     // none for cross-site prod, lax for local dev
+            domain: isProduction ? process.env.REACT_URL : "localhost",
             maxAge: data.AuthenticationResult.ExpiresIn * 1000  
         });
 
         res.cookie('refreshToken', data.AuthenticationResult.RefreshToken, {
             httpOnly: true,
-            secure: isProduction,                        
-            sameSite: isProduction ? "none" : "lax",     // none for cross-site prod, lax for local dev
-            domain: isProduction ? ".yourdomain.com" : "localhost",
+            secure: isHttps,                        
+            sameSite: isHttps ? "none" : "lax",     // none for cross-site prod, lax for local dev
+            domain: isProduction ? process.env.REACT_URL : "localhost",
             maxAge: 3 * 24 * 60 * 60 * 1000             
         });
 
         res.cookie('idToken', data.AuthenticationResult.IdToken, {
             httpOnly: true,
-            secure: isProduction,
-            sameSite: isProduction ? "none" : "lax",     // none for cross-site prod, lax for local dev
-            domain: isProduction ? ".yourdomain.com" : "localhost",
+            secure: isHttps,
+            sameSite: isHttps ? "none" : "lax",     // none for cross-site prod, lax for local dev
+            domain: isProduction ? process.env.REACT_URL : "localhost",
             maxAge: data.AuthenticationResult.ExpiresIn * 1000
         });
 

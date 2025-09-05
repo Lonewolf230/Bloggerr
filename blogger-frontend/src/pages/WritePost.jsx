@@ -2,8 +2,6 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import MDEditor, { commands } from "@uiw/react-md-editor";
 import { useNavigate } from 'react-router-dom'
-import { Upload } from "@aws-sdk/lib-storage";
-import { s3Client } from '../../s3config';
 import { v4 as uuidv4 } from 'uuid';
 import './WritePost.css';
 import GenLoader from '../components/GenLoader.jsx'
@@ -30,7 +28,6 @@ export default function WritePost() {
     const [rewriting, setRewriting] = useState(false)
     const countRef = useRef(0);
     const [userSelectedTags, setUserSelectedTags] = useState(new Set());
-
 
     const createPreviewUrl = useCallback((file) => {
         return URL.createObjectURL(file);
@@ -86,26 +83,30 @@ export default function WritePost() {
         }
     }, []);
 
-    const uploadToS3 = async (file, fileType, index) => {
-        const fileExtension = file.name.split('.').pop();
-        const key = `${fileType}s/${blogId}_${index}.${fileExtension}`;
+    const uploadMediaToServer = async (files) => {
+        const formData = new FormData();
+        formData.append('blogId', blogId);
+        
+        files.forEach(fileData => {
+            formData.append('files', fileData.file);
+        });
 
         try {
-            const upload = new Upload({
-                client: s3Client,
-                params: {
-                    Bucket: import.meta.env.VITE_BUCKET,
-                    Key: key,
-                    Body: file,
-                    ContentType: file.type
-                }
+            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/auth/blog-media`, {
+                method: 'POST',
+                credentials: 'include',
+                body: formData
             });
 
-            await upload.done();
-            return `https://${import.meta.env.VITE_BUCKET}.s3.${import.meta.env.VITE_REGION}.amazonaws.com/${key}`;
-        } catch (err) {
-            console.error('Error uploading to S3:', err);
-            throw err;
+            if (!response.ok) {
+                throw new Error('Failed to upload media');
+            }
+
+            const result = await response.json();
+            return result.uploads;
+        } catch (error) {
+            console.error('Media upload error:', error);
+            throw error;
         }
     };
 
@@ -117,32 +118,40 @@ export default function WritePost() {
             let imageUploads = [];
             let videoUploads = [];
 
-            let index = 0;
+            const filesToUpload = [];
             for (const [uploadId, upload] of mediaUploads.entries()) {
                 if (!upload.uploaded) {
-                    const s3Url = await uploadToS3(upload.file, upload.type, index++);
-                    updatedContent = updatedContent.replace(upload.previewUrl, s3Url);
+                    filesToUpload.push({ ...upload, uploadId });
+                }
+            }
 
-                    if (upload.type === 'image') {
-                        imageUploads.push(s3Url);
-                    } else if (upload.type === 'video') {
-                        videoUploads.push(s3Url);
+            if (filesToUpload.length > 0) {
+                const uploadResults = await uploadMediaToServer(filesToUpload);
+
+                uploadResults.forEach((result, index) => {
+                    const fileData = filesToUpload[index];
+                    updatedContent = updatedContent.replace(fileData.previewUrl, result.url);
+                    
+                    if (result.type === 'image') {
+                        imageUploads.push(result.url);
+                    } else if (result.type === 'video') {
+                        videoUploads.push(result.url);
                     }
 
                     setMediaUploads(prev => {
                         const newMap = new Map(prev);
-                        newMap.set(uploadId, { ...upload, uploaded: true, url: s3Url });
+                        newMap.set(fileData.uploadId, { 
+                            ...fileData, 
+                            uploaded: true, 
+                            url: result.url 
+                        });
                         return newMap;
                     });
-                }
+                });
             }
-            const plaintext = RemoveMarkdown(updatedContent);
-            console.log("Printing plaintext");
 
-            console.log(plaintext)
-            console.log(userSelectedTags);
+            const plaintext = RemoveMarkdown(updatedContent);
             const tagsArray = Array.from(userSelectedTags);
-            console.log("tags Array",tagsArray)
             
             const blogPost = {
                 blogId,
@@ -152,7 +161,7 @@ export default function WritePost() {
                 imgIds: imageUploads,
                 vidIds: videoUploads,
                 ytIds: ytIds,
-                tags:tagsArray
+                tags: tagsArray
             };
 
             const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/blog/postblog`, {
@@ -163,7 +172,7 @@ export default function WritePost() {
                 credentials: 'include',
                 body: JSON.stringify(blogPost)
             });
-
+            console.log("Response from posting blog:", response);
             if (!response.ok) {
                 throw new Error('Failed to save blog post');
             }
@@ -253,6 +262,7 @@ export default function WritePost() {
             setRewriting(false)
         }
     }
+    
     const revertLastEdit = () => {
         if (!lastEdit) return;
 
@@ -264,6 +274,7 @@ export default function WritePost() {
 
         setLastEdit(null);
     };
+    
     useEffect(() => {
         if (rewriting) {
             showToast('Rewriting your content...', 'info');
@@ -274,12 +285,6 @@ export default function WritePost() {
         setUserSelectedTags(new Set(newTags));
         console.log('Tags updated in parent:', newTags);
     };
-
-    const handleSaveTags = () => {
-        const tagsArray = Array.from(userSelectedTags);
-        console.log('Saving tags to backend:', tagsArray);
-    };
-
 
     return (
         <div className="container">

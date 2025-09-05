@@ -88,6 +88,7 @@ function BlogList({other=false}) {
                     <Link 
                         key={getBlogId(blog) || index} 
                         to={`/blog/${getBlogId(blog)}`} 
+                        state={blog} 
                         className="blog-link"
                         style={{ 
                             animationDelay: `${index * 0.1}s` 
@@ -113,7 +114,6 @@ function BlogList({other=false}) {
     );
 }
 
-// Helper function to extract blog ID consistently
 function getBlogId(blog) {
     return blog.blogId?.S || (typeof blog.blogId === 'string' ? blog.blogId : JSON.stringify(blog.blogId));
 }
