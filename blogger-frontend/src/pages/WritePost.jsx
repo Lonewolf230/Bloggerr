@@ -92,7 +92,7 @@ export default function WritePost() {
         });
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/auth/blog-media`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/blog-media`, {
                 method: 'POST',
                 credentials: 'include',
                 body: formData
@@ -164,7 +164,7 @@ export default function WritePost() {
                 tags: tagsArray
             };
 
-            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/blog/postblog`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/blog/postblog`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

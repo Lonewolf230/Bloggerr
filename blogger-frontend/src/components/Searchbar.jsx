@@ -43,7 +43,7 @@ const SearchBar = () => {
     
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_REACT_APP_API_URL}/auth/users?q=${encodeURIComponent(term)}&limit=10`,
+        `${import.meta.env.VITE_API_URL}/auth/users?q=${encodeURIComponent(term)}&limit=10`,
         {
           method: 'GET',
           credentials: 'include',

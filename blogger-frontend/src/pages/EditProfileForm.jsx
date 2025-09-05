@@ -182,7 +182,7 @@ export default function EditProfileForm({ showForm, setShowForm, username, onUpd
         formData.append('username', username);
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/upload/profile-picture`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/upload/profile-picture`, {
                 method: 'POST',
                 credentials: 'include',
                 body: formData
