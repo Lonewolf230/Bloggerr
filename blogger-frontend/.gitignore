@@ -27,4 +27,3 @@ dist-ssr
 # Add these lines to your .gitignore file
 
 *.env
-.vercel
