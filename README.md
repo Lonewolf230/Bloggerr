@@ -2,7 +2,7 @@
 
 Built using React, Node.js, Express.js, and integrated with AWS services like DynamoDB, S3, and Cognito. This web application allows users to write and preview blogs in Markdown, embedding images, videos, and YouTube links. It also provides social features, enabling users to follow and unfollow other users, like and unlike posts, as well as comment and uncomment content. The app leverages AWS services for authentication (via Cognito) and content storage (using DynamoDB for the database and S3 for media storage). The app also comes with AI writing tools to customise the writing style and a cosine similarity based recommendation system for similar blogs and to personalise a user's home feed. 
 
-The app is set-up with a CI-CD pipeline using Github Actions and deployed on AWS.
+The app is set-up with a CI-CD pipeline using Github Actions and deployed on Vercel and Render.
 
 ### Front-End
 
@@ -16,12 +16,7 @@ to install all the dependencies for the react project.
 Then create the .env file in the blogger-frontend folder
 
 ```
-VITE_REGION=''
-VITE_AWS_ACCESS_KEY_ID=''
-VITE_AWS_SECRET_ACCESS_KEY=''
-VITE_BUCKET=''
-VITE_REACT_APP_API_URL='http://localhost:5000/api'
-VITE_COGNITO_POOL_ID=''
+VITE_API_URL=
 ```
 
 then run the frontend using the command  
@@ -126,3 +121,56 @@ const index=pc.Index('blogs')
 here is the setup for pinecone and openAI.
 
 
+### CI-CD pipeline
+
+You can use Github Actions to set up a CI-CD pipeline that will run backend tests and will deploy on respective services upon success. Remember to turn off auto-deploys in Render else a push will trigger a deploy no matter what.
+
+Issues AWS SDK (Cognito) timesout most of the times so it might not be 100% reliable and will need mocking.
+
+```yaml
+name: CI/CD Pipeline
+on:
+    push:
+        branches:
+            - main
+jobs:
+    test-and-deploy:
+        runs-on: ubuntu-latest
+        env: 
+            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
+            OPEN_AI_KEY: ${{ secrets.OPEN_AI_KEY }}
+            PORT: ${{ secrets.PORT }}
+            AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+            REGION: ${{ secrets.REGION }}
+            REACT_URL: ${{ secrets.REACT_URL }}
+            VITE_API_URL: ${{ secrets.VITE_API_URL }}
+            JWT_SECRET: ${{ secrets.JWT_SECRET }}
+            CLIENT_ID: ${{ secrets.CLIENT_ID }}
+            USER_POOL_ID: ${{ secrets.USER_POOL_ID }}
+        steps:
+            - name: Checkout repo
+              uses: actions/checkout@v4
+            
+            - name: Set up Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+            
+            - name: Install backend dependencies
+              working-directory: ./backend
+              run: npm install
+            
+            - name: Run backend tests
+              working-directory: ./backend
+              run: npm test
+            
+            
+            - name: Deploy to Render
+              if: success()
+              working-directory: ./backend
+              run: curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
+```
+
+This is the github action file that runs tests and deploys to Render upon success.
