@@ -103,7 +103,6 @@ exports.login = async (req, res) => {
             httpOnly: true,
             secure: isHttps,                        
             sameSite: isHttps ? "none" : "lax",     // none for cross-site prod, lax for local dev
-            domain: isProduction ? process.env.REACT_URL : "localhost",
             maxAge: data.AuthenticationResult.ExpiresIn * 1000  
         });
 
@@ -111,7 +110,6 @@ exports.login = async (req, res) => {
             httpOnly: true,
             secure: isHttps,                        
             sameSite: isHttps ? "none" : "lax",     // none for cross-site prod, lax for local dev
-            domain: isProduction ? process.env.REACT_URL : "localhost",
             maxAge: 3 * 24 * 60 * 60 * 1000             
         });
 
@@ -119,7 +117,6 @@ exports.login = async (req, res) => {
             httpOnly: true,
             secure: isHttps,
             sameSite: isHttps ? "none" : "lax",     // none for cross-site prod, lax for local dev
-            domain: isProduction ? process.env.REACT_URL : "localhost",
             maxAge: data.AuthenticationResult.ExpiresIn * 1000
         });
 
