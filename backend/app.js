@@ -9,11 +9,24 @@ const commentRoutes=require('./routes/commentRoutes')
 
 const app=express()
 
+const allowedOrigins = [
+  'http://localhost:5173',                
+  process.env.REACT_URL                    
+].filter(Boolean);                        
+
 app.use(cors({
-    origin:process.env.REACT_URL || 'http://localhost:5173',
-    credentials:true,
-    
-}))
+  origin: function(origin, callback) {
+    if (!origin) return callback(null, true); 
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error(`CORS blocked for origin: ${origin}`));
+    }
+  },
+  credentials: true
+}));
+
+
 app.set('trust proxy',true) 
 app.use(bodyParser.json())
 app.use(cookieParser())
