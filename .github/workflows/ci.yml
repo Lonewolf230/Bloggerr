@@ -8,6 +8,19 @@ on:
 jobs:
     test-and-deploy:
         runs-on: ubuntu-latest
+        env: 
+            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
+            OPEN_AI_KEY: ${{ secrets.OPEN_AI_KEY }}
+            PORT: ${{ secrets.PORT }}
+            AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+            REGION: ${{ secrets.REGION }}
+            REACT_URL: ${{ secrets.REACT_URL }}
+            VITE_API_URL: ${{ secrets.VITE_API_URL }}
+            JWT_SECRET: ${{ secrets.JWT_SECRET }}
+            CLIENT_ID: ${{ secrets.CLIENT_ID }}
+            USER_POOL_ID: ${{ secrets.USER_POOL_ID }}
 
         steps:
             - name: Checkout repo
