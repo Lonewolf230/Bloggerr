@@ -9,8 +9,8 @@ const client=new CognitoIdentityProviderClient({
     credentials:fromEnv(),
     maxAttempts:3,
     requestHandler: new NodeHttpHandler({
-        connectionTimeout:50000,
-        requestTimeout:50000
+        connectionTimeout:5000,
+        requestTimeout:8000
     })
 })
 
