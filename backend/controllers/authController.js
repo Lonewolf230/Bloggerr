@@ -101,21 +101,21 @@ exports.login = async (req, res) => {
         res.cookie('accessToken', data.AuthenticationResult.AccessToken, {
             httpOnly: true,
             secure: isProduction,                        
-            sameSite: 'strict',     // none for cross-site prod, lax for local dev
+            sameSite: isProduction ? "none" : "lax",     // none for cross-site prod, lax for local dev
             maxAge: data.AuthenticationResult.ExpiresIn * 1000  
         });
 
         res.cookie('refreshToken', data.AuthenticationResult.RefreshToken, {
             httpOnly: true,
             secure: isProduction,                        
-            sameSite: 'strict',     // none for cross-site prod, lax for local dev
+            sameSite: isProduction ? "none" : "lax",     // none for cross-site prod, lax for local dev
             maxAge: 3 * 24 * 60 * 60 * 1000             
         });
 
         res.cookie('idToken', data.AuthenticationResult.IdToken, {
             httpOnly: true,
             secure: isProduction,
-            sameSite: 'strict',     // none for cross-site prod, lax for local dev
+            sameSite: isProduction ? "none" : "lax",     // none for cross-site prod, lax for local dev
             maxAge: data.AuthenticationResult.ExpiresIn * 1000
         });
 
@@ -187,18 +187,18 @@ exports.logout = async (req, res) => {
         res.clearCookie('accessToken', {
             httpOnly: true,
             secure: isProduction,                        
-            sameSite: 'strict',
+            sameSite: isProduction ? "none" : "lax",
 
         });
         res.clearCookie('refreshToken', {
             httpOnly: true,
             secure: isProduction,                        
-            sameSite: 'strict',
+            sameSite: isProduction ? "none" : "lax",
         });
         res.clearCookie('idToken', {
             httpOnly: true,
             secure: isProduction,                        
-            sameSite: 'strict',
+            sameSite: isProduction ? "none" : "lax",
         });
 
         res.status(200).json({ message: "Logged Out successfully" });
