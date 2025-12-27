@@ -96,27 +96,26 @@ exports.login = async (req, res) => {
         const firstTime = await misc.getFirstTime(email.split("@")[0])
         if (firstTime) await misc.setFirstTime(email.split("@")[0])
         const isProduction = process.env.NODE_ENV === 'production';
-        const isHttps = req.protocol === 'https' || req.headers['x-forwarded-proto'] === 'https'; 
         console.log("Is Production:", isProduction);
 
         res.cookie('accessToken', data.AuthenticationResult.AccessToken, {
             httpOnly: true,
-            secure: isHttps,                        
-            sameSite: isHttps ? "none" : "lax",     // none for cross-site prod, lax for local dev
+            secure: isProduction,                        
+            sameSite: isProduction ? "none" : "lax",     // none for cross-site prod, lax for local dev
             maxAge: data.AuthenticationResult.ExpiresIn * 1000  
         });
 
         res.cookie('refreshToken', data.AuthenticationResult.RefreshToken, {
             httpOnly: true,
-            secure: isHttps,                        
-            sameSite: isHttps ? "none" : "lax",     // none for cross-site prod, lax for local dev
+            secure: isProduction,                        
+            sameSite: isProduction ? "none" : "lax",     // none for cross-site prod, lax for local dev
             maxAge: 3 * 24 * 60 * 60 * 1000             
         });
 
         res.cookie('idToken', data.AuthenticationResult.IdToken, {
             httpOnly: true,
-            secure: isHttps,
-            sameSite: isHttps ? "none" : "lax",     // none for cross-site prod, lax for local dev
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",     // none for cross-site prod, lax for local dev
             maxAge: data.AuthenticationResult.ExpiresIn * 1000
         });
 
@@ -181,25 +180,25 @@ exports.logout = async (req, res) => {
 
     try {
         const isProduction = process.env.NODE_ENV === 'production';
-        const isHttps = req.protocol === 'https' || req.headers['x-forwarded-proto'] === 'https';
+        // const isHttps = req.protocol === 'https' || req.headers['x-forwarded-proto'] === 'https';
         const command = new GlobalSignOutCommand(params);
         await cognito.send(command);
 
         res.clearCookie('accessToken', {
             httpOnly: true,
-            secure: isHttps,                        
-            sameSite: isHttps ? "none" : "lax",
+            secure: isProduction,                        
+            sameSite: isProduction ? "none" : "lax",
 
         });
         res.clearCookie('refreshToken', {
             httpOnly: true,
-            secure: isHttps,                        
-            sameSite: isHttps ? "none" : "lax",
+            secure: isProduction,                        
+            sameSite: isProduction ? "none" : "lax",
         });
         res.clearCookie('idToken', {
             httpOnly: true,
-            secure: isHttps,                        
-            sameSite: isHttps ? "none" : "lax",
+            secure: isProduction,                        
+            sameSite: isProduction ? "none" : "lax",
         });
 
         res.status(200).json({ message: "Logged Out successfully" });
