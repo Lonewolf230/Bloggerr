@@ -4,6 +4,7 @@ export default async function handler(req, res) {
 
     // DEBUG: confirm function is hit
     console.log("PROXY HIT", req.method, path);
+    console.log("Hittinh proxy")
 
     const backendURL =
       `https://bloggerr-k3d3.onrender.com/api/${path.join("/")}`;
