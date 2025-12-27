@@ -3,7 +3,7 @@ const {createBlog,getBlog,getBlogs,deleteBlog,likeBlog,unlikeBlog,undislikeblog,
 const {verifyToken,checkBlogOwnership}=require("../middleware/authMiddleware")
 const router=express.Router()
 
-router.post('/postblog',createBlog)
+router.post('/postblog',verifyToken,createBlog)
 router.get('/getblog/:id',verifyToken,getBlog)
 router.get('/getblogs/:author',verifyToken,getBlogs)
 router.delete('/deleteblog/:id',verifyToken,checkBlogOwnership,deleteBlog)    

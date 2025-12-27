@@ -1,12 +1,5 @@
-import axios from "axios"
+import api from "./config.js";
 
-const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || '/api',
-    withCredentials: true, // send cookies
-    headers: {
-        'Content-Type': 'application/json'
-    }
-})
 
 api.interceptors.response.use(
   (response) => response,
