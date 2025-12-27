@@ -1,3 +1,8 @@
+export const config = {
+  runtime: "nodejs",
+};
+
+
 export default async function handler(req, res) {
   if (req.method === "OPTIONS") {
     res.status(200).end();
