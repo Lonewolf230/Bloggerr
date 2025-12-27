@@ -1,4 +1,8 @@
 export default async function handler(req, res) {
+  if (req.method === "OPTIONS") {
+    res.status(200).end();
+    return;
+  }
   const { path } = req.query;
 
   const backendURL =
