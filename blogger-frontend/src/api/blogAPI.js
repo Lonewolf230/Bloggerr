@@ -1,5 +1,5 @@
 
-import api from "./config.js";ß
+import api from "./config.js";
 
 api.interceptors.response.use(
   (response) => response,
